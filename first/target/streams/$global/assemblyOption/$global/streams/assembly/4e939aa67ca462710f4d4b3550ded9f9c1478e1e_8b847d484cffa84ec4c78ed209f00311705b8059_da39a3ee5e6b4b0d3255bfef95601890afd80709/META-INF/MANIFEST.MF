@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: finagle-mux
+Implementation-Version: 17.12.0
+Specification-Vendor: com.twitter
+Specification-Title: finagle-mux
+Implementation-Vendor-Id: com.twitter
+Specification-Version: 17.12.0
+Implementation-Vendor: com.twitter
+

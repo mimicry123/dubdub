@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+	<info organisation="default"
+		module="user-build"
+		revision="0.1-SNAPSHOT"
+		status="integration"
+		publication="20171228170425"
+		e:sbtVersion="1.0" e:scalaVersion="2.12"
+	>
+		<description>
+		user-build
+		</description>
+	</info>
+	<configurations>
+		<conf name="compile" visibility="public" description=""/>
+		<conf name="runtime" visibility="public" description="" extends="compile"/>
+		<conf name="test" visibility="public" description="" extends="runtime"/>
+		<conf name="provided" visibility="public" description=""/>
+		<conf name="optional" visibility="public" description=""/>
+		<conf name="compile-internal" visibility="private" description="" extends="compile,optional,provided"/>
+		<conf name="runtime-internal" visibility="private" description="" extends="runtime,optional"/>
+		<conf name="test-internal" visibility="private" description="" extends="test,optional,provided"/>
+		<conf name="plugin" visibility="private" description=""/>
+		<conf name="pom" visibility="public" description=""/>
+		<conf name="scala-tool" visibility="private" description=""/>
+	</configurations>
+	<publications>
+		<artifact name="user-build" type="pom" ext="pom" conf="pom"/>
+		<artifact name="user-build" type="jar" ext="jar" conf="compile"/>
+		<artifact name="user-build" type="src" ext="jar" conf="compile" e:classifier="sources"/>
+		<artifact name="user-build" type="doc" ext="jar" conf="compile" e:classifier="javadoc"/>
+	</publications>
+	<dependencies>
+		<dependency org="org.scala-lang" name="scala-compiler" rev="2.12.4" conf="scala-tool->default,optional(default)"/>
+		<dependency org="org.scala-lang" name="scala-library" rev="2.12.4" conf="scala-tool->default,optional(default);provided->default(compile)"/>
+		<dependency org="org.scala-sbt" name="sbt" rev="1.0.4" conf="provided->default(compile)"/>
+		<dependency org="com.twitter" name="scrooge-sbt-plugin" rev="17.12.0" conf="compile->default(compile)" e:sbtVersion="1.0" e:scalaVersion="2.12"/>
+		<override org="org.scalactic" module="scalactic_2.12" matcher="exact" rev="3.0.1"/>
+		<override org="javax.inject" module="javax.inject" matcher="exact" rev="1"/>
+		<override org="org.apache.ant" module="ant-launcher" matcher="exact" rev="1.9.9"/>
+		<override org="org.ow2.asm" module="asm" matcher="exact" rev="6.0"/>
+		<override org="javax.annotation" module="jsr250-api" matcher="exact" rev="1.0"/>
+		<override org="org.scala-lang" module="scala-library" matcher="exact" rev="2.12.4"/>
+		<override org="org.codehaus.plexus" module="plexus-utils" matcher="exact" rev="3.0.22"/>
+		<override org="org.apache.commons" module="commons-lang3" matcher="exact" rev="3.4"/>
+		<override org="org.codehaus.plexus" module="plexus-component-annotations" matcher="exact" rev="1.5.5"/>
+		<override org="org.ow2.asm" module="asm-tree" matcher="exact" rev="6.0"/>
+		<override org="org.codehaus.plexus" module="plexus-classworlds" matcher="exact" rev="2.5.2"/>
+		<override org="org.pantsbuild" module="jarjar" matcher="exact" rev="1.6.5"/>
+		<override org="org.eclipse.sisu" module="org.eclipse.sisu.inject" matcher="exact" rev="0.3.2"/>
+		<override org="org.apache.maven" module="maven-artifact" matcher="exact" rev="3.3.9"/>
+		<override org="org.apache.maven" module="maven-plugin-api" matcher="exact" rev="3.3.9"/>
+		<override org="org.apache.maven" module="maven-model" matcher="exact" rev="3.3.9"/>
+		<override org="default" module="first-build" matcher="exact" rev="0.1-SNAPSHOT"/>
+		<override org="org.scala-lang" module="scala-reflect" matcher="exact" rev="2.12.4"/>
+		<override org="javax.enterprise" module="cdi-api" matcher="exact" rev="1.0"/>
+		<override org="org.eclipse.sisu" module="org.eclipse.sisu.plexus" matcher="exact" rev="0.3.2"/>
+		<override org="org.apache.ant" module="ant" matcher="exact" rev="1.9.9"/>
+		<override org="org.ow2.asm" module="asm-commons" matcher="exact" rev="6.0"/>
+		<override org="com.eed3si9n" module="sbt-assembly" matcher="exact" rev="0.14.6"/>
+	</dependencies>
+</ivy-module>

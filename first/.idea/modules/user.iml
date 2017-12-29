@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id="user" external.linked.project.path="$MODULE_DIR$/../../../user" external.root.project.path="$MODULE_DIR$/../.." external.system.id="SBT" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/../../../user/target/scala-2.12/classes" />
+    <output-test url="file://$MODULE_DIR$/../../../user/target/scala-2.12/test-classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../user">
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/src/main/scala" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/src/main/scala-2.12" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/src/test/scala" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/src/test/scala-2.12" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/target/scala-2.12/src_managed/main" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/target/scala-2.12/src_managed/test" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/target/scala-2.12/resource_managed/main" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../user/target/scala-2.12/resource_managed/test" type="java-test-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../user/target/streams" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../user/target/thrift_external" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="sbt: aopalliance:aopalliance:1.0:jar" level="project" />
+    <orderEntry type="module-library">
+      <library name="sbt: unmanaged-sources-and-docs">
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.ivy2/cache/io.netty/netty-transport-native-epoll/srcs/netty-transport-native-epoll-4.1.16.Final-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="sbt: org.yaml:snakeyaml:1.12:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.slf4j:slf4j-api:1.7.21:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.slf4j:log4j-over-slf4j:1.7.21:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.slf4j:jul-to-slf4j:1.7.21:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.slf4j:jcl-over-slf4j:1.7.21:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang.modules:scala-xml_2.12:1.0.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang.modules:scala-parser-combinators_2.12:1.0.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang:scalap:2.12.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang:scala-reflect:2.12.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.12.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang:scala-compiler:2.12.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.joda:joda-convert:1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: net.codingwell:scala-guice_2.12:4.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: joda-time:joda-time:2.5:jar" level="project" />
+    <orderEntry type="library" name="sbt: javax.servlet:servlet-api:2.5:jar" level="project" />
+    <orderEntry type="library" name="sbt: javax.inject:javax.inject:1:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-transport-native-unix-common:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-transport-native-epoll:4.1.16.Final:linux-x86_64:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-transport:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-resolver:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-handler-proxy:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-handler:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-common:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-codec-socks:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-codec-http2:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-codec-http:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-codec:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-buffer:4.1.16.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty:3.10.1.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-lang:commons-lang:2.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-io:commons-io:2.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-tunable_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-stats_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-slf4j-jul-bridge_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-slf4j-api_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-security_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-registry_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-logging_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-lint_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-jvm_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-hashing_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-function_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-core_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-collection_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-codec_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-cache_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:util-app_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:twitter-server_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:scrooge-core_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:libthrift:0.5.0-7:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:inject-utils_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:inject-thrift_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:inject-slf4j_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:inject-server_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:inject-modules_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:inject-core_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:inject-app_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finatra-utils_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finatra-thrift_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-zipkin-core_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-tunable_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-toggle_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-thriftmux_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-thrift_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-stats_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-netty4_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-netty4-http_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-netty3_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-netty3-http_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-mux_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-init_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-http_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-http2_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-exp_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-core_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-base-http_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.thoughtworks.paranamer:paranamer:2.8:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.google.inject.extensions:guice-multibindings:4.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.google.inject.extensions:guice-assistedinject:4.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.google.inject:guice:4.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.google.guava:guava:19.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.google.code.findbugs:jsr305:3.0.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.github.nscala-time:nscala-time_2.12:2.14.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.github.ben-manes.caffeine:caffeine:2.3.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.module:jackson-module-scala_2.12:2.8.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.module:jackson-module-paranamer:2.8.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-databind:2.8.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-core:2.8.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-annotations:2.8.4:jar" level="project" />
+  </component>
+</module>

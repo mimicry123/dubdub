@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: inject-server
+Implementation-Version: 17.12.0
+Specification-Vendor: com.twitter
+Specification-Title: inject-server
+Implementation-Vendor-Id: com.twitter
+Specification-Version: 17.12.0
+Implementation-URL: https://github.com/twitter/finatra
+Implementation-Vendor: com.twitter
+

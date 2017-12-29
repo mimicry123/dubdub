@@ -1,0 +1,45 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1476420938098
+Build-Jdk: 1.7.0_79
+Built-By: tatu
+Bundle-Description: Add-on module for Jackson (http://jackson.codehaus.o
+ rg) to supportJoda (http://joda-time.sourceforge.net/) data types.
+Bundle-DocURL: http://wiki.fasterxml.com/JacksonModuleJoda
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: Jackson-datatype-Joda
+Bundle-SymbolicName: com.fasterxml.jackson.datatype.jackson-datatype-jod
+ a
+Bundle-Vendor: FasterXML
+Bundle-Version: 2.8.4
+Created-By: Apache Maven Bundle Plugin
+Export-Package: com.fasterxml.jackson.datatype.joda;version="2.8.4",com.
+ fasterxml.jackson.datatype.joda.cfg;version="2.8.4",com.fasterxml.jacks
+ on.datatype.joda.deser;version="2.8.4",com.fasterxml.jackson.datatype.j
+ oda.deser.key;version="2.8.4",com.fasterxml.jackson.datatype.joda.ser;v
+ ersion="2.8.4"
+Implementation-Build-Date: 2016-10-14 04:55:32+0000
+Implementation-Title: Jackson-datatype-Joda
+Implementation-Vendor: FasterXML
+Implementation-Vendor-Id: com.fasterxml.jackson.datatype
+Implementation-Version: 2.8.4
+Import-Package: com.fasterxml.jackson.annotation;version="[2.8,3)",com.f
+ asterxml.jackson.core;version="[2.8,3)",com.fasterxml.jackson.core.util
+ ;version="[2.8,3)",com.fasterxml.jackson.databind;version="[2.8,3)",com
+ .fasterxml.jackson.databind.deser;version="[2.8,3)",com.fasterxml.jacks
+ on.databind.deser.std;version="[2.8,3)",com.fasterxml.jackson.databind.
+ jsonFormatVisitors;version="[2.8,3)",com.fasterxml.jackson.databind.jso
+ ntype;version="[2.8,3)",com.fasterxml.jackson.databind.module;version="
+ [2.8,3)",com.fasterxml.jackson.databind.node;version="[2.8,3)",com.fast
+ erxml.jackson.databind.ser;version="[2.8,3)",com.fasterxml.jackson.data
+ bind.ser.std;version="[2.8,3)",com.fasterxml.jackson.datatype.joda.cfg,
+ com.fasterxml.jackson.datatype.joda.deser,com.fasterxml.jackson.datatyp
+ e.joda.deser.key,com.fasterxml.jackson.datatype.joda.ser,org.joda.time;
+ version="[2.7,3)",org.joda.time.format;version="[2.7,3)"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+Specification-Title: Jackson-datatype-Joda
+Specification-Vendor: FasterXML
+Specification-Version: 2.8.4
+Tool: Bnd-3.0.0.201509101326
+X-Compile-Source-JDK: 1.7
+X-Compile-Target-JDK: 1.7

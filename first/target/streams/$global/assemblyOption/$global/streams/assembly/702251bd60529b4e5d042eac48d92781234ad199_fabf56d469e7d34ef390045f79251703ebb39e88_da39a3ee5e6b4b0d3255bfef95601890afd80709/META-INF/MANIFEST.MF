@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: finagle-thrift
+Implementation-Version: 17.12.0
+Specification-Vendor: com.twitter
+Specification-Title: finagle-thrift
+Implementation-Vendor-Id: com.twitter
+Specification-Version: 17.12.0
+Implementation-Vendor: com.twitter
+
