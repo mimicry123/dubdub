@@ -39,6 +39,10 @@ object User extends ThriftStructCodec3[User] {
   val UserIdFieldManifest = implicitly[Manifest[String]]
   val PasswordField = new TField("password", TType.STRING, 2)
   val PasswordFieldManifest = implicitly[Manifest[String]]
+  val TokenField = new TField("token", TType.STRING, 3)
+  val TokenFieldManifest = implicitly[Manifest[String]]
+  val EmailField = new TField("email", TType.STRING, 4)
+  val EmailFieldManifest = implicitly[Manifest[String]]
 
   /**
    * Field information in declaration order.
@@ -60,6 +64,28 @@ object User extends ThriftStructCodec3[User] {
       false,
       false,
       PasswordFieldManifest,
+      _root_.scala.None,
+      _root_.scala.None,
+      immutable$Map.empty[String, String],
+      immutable$Map.empty[String, String],
+      None
+    ),
+    new ThriftStructFieldInfo(
+      TokenField,
+      false,
+      false,
+      TokenFieldManifest,
+      _root_.scala.None,
+      _root_.scala.None,
+      immutable$Map.empty[String, String],
+      immutable$Map.empty[String, String],
+      None
+    ),
+    new ThriftStructFieldInfo(
+      EmailField,
+      false,
+      false,
+      EmailFieldManifest,
       _root_.scala.None,
       _root_.scala.None,
       immutable$Map.empty[String, String],
@@ -88,6 +114,16 @@ object User extends ThriftStructCodec3[User] {
         {
           val field = original.password
           field
+        },
+      token =
+        {
+          val field = original.token
+          field
+        },
+      email =
+        {
+          val field = original.email
+          field
         }
     )
 
@@ -100,6 +136,8 @@ object User extends ThriftStructCodec3[User] {
 
     var userIdOffset: Int = -1
     var passwordOffset: Int = -1
+    var tokenOffset: Int = -1
+    var emailOffset: Int = -1
 
     var _passthroughFields: Builder[(Short, TFieldBlob), immutable$Map[Short, TFieldBlob]] = null
     var _done = false
@@ -140,6 +178,34 @@ object User extends ThriftStructCodec3[User] {
                   )
                 )
             }
+          case 3 =>
+            _field.`type` match {
+              case TType.STRING =>
+                tokenOffset = _iprot.offsetSkipString
+    
+              case _actualType =>
+                val _expectedType = TType.STRING
+                throw new TProtocolException(
+                  "Received wrong type for field 'token' (expected=%s, actual=%s).".format(
+                    ttypeToString(_expectedType),
+                    ttypeToString(_actualType)
+                  )
+                )
+            }
+          case 4 =>
+            _field.`type` match {
+              case TType.STRING =>
+                emailOffset = _iprot.offsetSkipString
+    
+              case _actualType =>
+                val _expectedType = TType.STRING
+                throw new TProtocolException(
+                  "Received wrong type for field 'email' (expected=%s, actual=%s).".format(
+                    ttypeToString(_expectedType),
+                    ttypeToString(_actualType)
+                  )
+                )
+            }
           case _ =>
             if (_passthroughFields == null)
               _passthroughFields = immutable$Map.newBuilder[Short, TFieldBlob]
@@ -157,6 +223,8 @@ object User extends ThriftStructCodec3[User] {
       _iprot.offset,
       userIdOffset,
       passwordOffset,
+      tokenOffset,
+      emailOffset,
       if (_passthroughFields == null)
         NoPassthroughFields
       else
@@ -173,6 +241,8 @@ object User extends ThriftStructCodec3[User] {
   private[thrift] def eagerDecode(_iprot: TProtocol): User = {
     var userId: String = null
     var password: String = null
+    var token: String = null
+    var email: String = null
     var _passthroughFields: Builder[(Short, TFieldBlob), immutable$Map[Short, TFieldBlob]] = null
     var _done = false
 
@@ -209,6 +279,32 @@ object User extends ThriftStructCodec3[User] {
                   )
                 )
             }
+          case 3 =>
+            _field.`type` match {
+              case TType.STRING =>
+                token = readTokenValue(_iprot)
+              case _actualType =>
+                val _expectedType = TType.STRING
+                throw new TProtocolException(
+                  "Received wrong type for field 'token' (expected=%s, actual=%s).".format(
+                    ttypeToString(_expectedType),
+                    ttypeToString(_actualType)
+                  )
+                )
+            }
+          case 4 =>
+            _field.`type` match {
+              case TType.STRING =>
+                email = readEmailValue(_iprot)
+              case _actualType =>
+                val _expectedType = TType.STRING
+                throw new TProtocolException(
+                  "Received wrong type for field 'email' (expected=%s, actual=%s).".format(
+                    ttypeToString(_expectedType),
+                    ttypeToString(_actualType)
+                  )
+                )
+            }
           case _ =>
             if (_passthroughFields == null)
               _passthroughFields = immutable$Map.newBuilder[Short, TFieldBlob]
@@ -222,6 +318,8 @@ object User extends ThriftStructCodec3[User] {
     new Immutable(
       userId,
       password,
+      token,
+      email,
       if (_passthroughFields == null)
         NoPassthroughFields
       else
@@ -231,14 +329,18 @@ object User extends ThriftStructCodec3[User] {
 
   def apply(
     userId: String,
-    password: String
+    password: String,
+    token: String,
+    email: String
   ): User =
     new Immutable(
       userId,
-      password
+      password,
+      token,
+      email
     )
 
-  def unapply(_item: User): _root_.scala.Option[_root_.scala.Tuple2[String, String]] = _root_.scala.Some(_item.toTuple)
+  def unapply(_item: User): _root_.scala.Option[_root_.scala.Tuple4[String, String, String, String]] = _root_.scala.Some(_item.toTuple)
 
 
   @inline private[thrift] def readUserIdValue(_iprot: TProtocol): String = {
@@ -269,6 +371,34 @@ object User extends ThriftStructCodec3[User] {
     _oprot.writeString(password_item)
   }
 
+  @inline private[thrift] def readTokenValue(_iprot: TProtocol): String = {
+    _iprot.readString()
+  }
+
+  @inline private def writeTokenField(token_item: String, _oprot: TProtocol): Unit = {
+    _oprot.writeFieldBegin(TokenField)
+    writeTokenValue(token_item, _oprot)
+    _oprot.writeFieldEnd()
+  }
+
+  @inline private def writeTokenValue(token_item: String, _oprot: TProtocol): Unit = {
+    _oprot.writeString(token_item)
+  }
+
+  @inline private[thrift] def readEmailValue(_iprot: TProtocol): String = {
+    _iprot.readString()
+  }
+
+  @inline private def writeEmailField(email_item: String, _oprot: TProtocol): Unit = {
+    _oprot.writeFieldBegin(EmailField)
+    writeEmailValue(email_item, _oprot)
+    _oprot.writeFieldEnd()
+  }
+
+  @inline private def writeEmailValue(email_item: String, _oprot: TProtocol): Unit = {
+    _oprot.writeString(email_item)
+  }
+
 
   object Immutable extends ThriftStructCodec3[User] {
     override def encode(_item: User, _oproto: TProtocol): Unit = { _item.write(_oproto) }
@@ -284,14 +414,20 @@ object User extends ThriftStructCodec3[User] {
   class Immutable(
       val userId: String,
       val password: String,
+      val token: String,
+      val email: String,
       override val _passthroughFields: immutable$Map[Short, TFieldBlob])
     extends User {
     def this(
       userId: String,
-      password: String
+      password: String,
+      token: String,
+      email: String
     ) = this(
       userId,
       password,
+      token,
+      email,
       Map.empty
     )
   }
@@ -307,6 +443,8 @@ object User extends ThriftStructCodec3[User] {
       _end_offset: Int,
       userIdOffset: Int,
       passwordOffset: Int,
+      tokenOffset: Int,
+      emailOffset: Int,
       override val _passthroughFields: immutable$Map[Short, TFieldBlob])
     extends User {
 
@@ -328,6 +466,18 @@ object User extends ThriftStructCodec3[User] {
         null
       else {
         _proto.decodeString(_buf, passwordOffset)
+      }
+    lazy val token: String =
+      if (tokenOffset == -1)
+        null
+      else {
+        _proto.decodeString(_buf, tokenOffset)
+      }
+    lazy val email: String =
+      if (emailOffset == -1)
+        null
+      else {
+        _proto.decodeString(_buf, emailOffset)
       }
 
     /**
@@ -353,6 +503,8 @@ object User extends ThriftStructCodec3[User] {
     protected def _underlying_User: User
     override def userId: String = _underlying_User.userId
     override def password: String = _underlying_User.password
+    override def token: String = _underlying_User.token
+    override def email: String = _underlying_User.email
     override def _passthroughFields = _underlying_User._passthroughFields
   }
 }
@@ -363,7 +515,7 @@ object User extends ThriftStructCodec3[User] {
  */
 trait User
   extends ThriftStruct
-  with _root_.scala.Product2[String, String]
+  with _root_.scala.Product4[String, String, String, String]
   with HasThriftStructCodec3[User]
   with java.io.Serializable
 {
@@ -371,16 +523,22 @@ trait User
 
   def userId: String
   def password: String
+  def token: String
+  def email: String
 
   def _passthroughFields: immutable$Map[Short, TFieldBlob] = immutable$Map.empty
 
   def _1 = userId
   def _2 = password
+  def _3 = token
+  def _4 = email
 
-  def toTuple: _root_.scala.Tuple2[String, String] = {
+  def toTuple: _root_.scala.Tuple4[String, String, String, String] = {
     (
       userId,
-      password
+      password,
+      token,
+      email
     )
   }
 
@@ -412,6 +570,20 @@ trait User
               } else {
                 _root_.scala.None
               }
+            case 3 =>
+              if (token ne null) {
+                writeTokenValue(token, _oprot)
+                _root_.scala.Some(User.TokenField)
+              } else {
+                _root_.scala.None
+              }
+            case 4 =>
+              if (email ne null) {
+                writeEmailValue(email, _oprot)
+                _root_.scala.Some(User.EmailField)
+              } else {
+                _root_.scala.None
+              }
             case _ => _root_.scala.None
           }
         _fieldOpt match {
@@ -439,17 +611,25 @@ trait User
   def setField(_blob: TFieldBlob): User = {
     var userId: String = this.userId
     var password: String = this.password
+    var token: String = this.token
+    var email: String = this.email
     var _passthroughFields = this._passthroughFields
     _blob.id match {
       case 1 =>
         userId = readUserIdValue(_blob.read)
       case 2 =>
         password = readPasswordValue(_blob.read)
+      case 3 =>
+        token = readTokenValue(_blob.read)
+      case 4 =>
+        email = readEmailValue(_blob.read)
       case _ => _passthroughFields += (_blob.id -> _blob)
     }
     new Immutable(
       userId,
       password,
+      token,
+      email,
       _passthroughFields
     )
   }
@@ -462,17 +642,25 @@ trait User
   def unsetField(_fieldId: Short): User = {
     var userId: String = this.userId
     var password: String = this.password
+    var token: String = this.token
+    var email: String = this.email
 
     _fieldId match {
       case 1 =>
         userId = null
       case 2 =>
         password = null
+      case 3 =>
+        token = null
+      case 4 =>
+        email = null
       case _ =>
     }
     new Immutable(
       userId,
       password,
+      token,
+      email,
       _passthroughFields - _fieldId
     )
   }
@@ -486,12 +674,18 @@ trait User
 
   def unsetPassword: User = unsetField(2)
 
+  def unsetToken: User = unsetField(3)
+
+  def unsetEmail: User = unsetField(4)
+
 
   override def write(_oprot: TProtocol): Unit = {
     User.validate(this)
     _oprot.writeStructBegin(Struct)
     if (userId ne null) writeUserIdField(userId, _oprot)
     if (password ne null) writePasswordField(password, _oprot)
+    if (token ne null) writeTokenField(token, _oprot)
+    if (email ne null) writeEmailField(email, _oprot)
     if (_passthroughFields.nonEmpty) {
       _passthroughFields.values.foreach { _.write(_oprot) }
     }
@@ -502,11 +696,15 @@ trait User
   def copy(
     userId: String = this.userId,
     password: String = this.password,
+    token: String = this.token,
+    email: String = this.email,
     _passthroughFields: immutable$Map[Short, TFieldBlob] = this._passthroughFields
   ): User =
     new Immutable(
       userId,
       password,
+      token,
+      email,
       _passthroughFields
     )
 
@@ -526,11 +724,13 @@ trait User
   override def toString: String = _root_.scala.runtime.ScalaRunTime._toString(this)
 
 
-  override def productArity: Int = 2
+  override def productArity: Int = 4
 
   override def productElement(n: Int): Any = n match {
     case 0 => this.userId
     case 1 => this.password
+    case 2 => this.token
+    case 3 => this.email
     case _ => throw new IndexOutOfBoundsException(n.toString)
   }
 

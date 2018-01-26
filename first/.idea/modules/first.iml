@@ -21,21 +21,77 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="sbt: aopalliance:aopalliance:1.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.yaml:snakeyaml:1.12:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.twitter:inject-thrift_2.12:17.12.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.twitter:finatra-thrift_2.12:17.12.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.twitter:finagle-thriftmux_2.12:17.12.0:jar" level="project" />
     <orderEntry type="module" module-name="user" exported="" />
-    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-annotations:2.8.4:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-core:2.8.4:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-databind:2.8.4:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.fasterxml.jackson.datatype:jackson-datatype-joda:2.8.4:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.fasterxml.jackson.module:jackson-module-paranamer:2.8.4:jar" level="project" />
     <orderEntry type="library" name="sbt: com.fasterxml.jackson.module:jackson-module-scala_2.12:2.8.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.module:jackson-module-paranamer:2.8.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-databind:2.8.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-core:2.8.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.core:jackson-annotations:2.8.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.yaml:snakeyaml:1.17:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:machinist_2.12:0.6.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:cats-macros_2.12:1.0.0-RC2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:cats-kernel_2.12:1.0.0-RC2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:cats-core_2.12:1.0.0-RC2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.slf4j:slf4j-api:1.7.25:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.locationtech.spatial4j:spatial4j:0.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.hdrhistogram:HdrHistogram:2.1.9:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch.plugin:transport-netty4-client:6.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch.plugin:reindex-client:6.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch.plugin:percolator-client:6.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch.plugin:parent-join-client:6.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch.plugin:lang-mustache-client:6.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch.client:transport:6.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch.client:elasticsearch-rest-client:6.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch:securesm:1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch:jna:4.4.0-1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch:elasticsearch-cli:6.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.elasticsearch:elasticsearch:6.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-suggest:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-spatial3d:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-spatial-extras:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-spatial:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-sandbox:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-queryparser:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-queries:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-misc:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-memory:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-join:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-highlighter:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-grouping:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-core:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-backward-codecs:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.lucene:lucene-analyzers-common:7.1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-slf4j-impl:2.9.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-core:2.9.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-api:2.9.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.logging.log4j:log4j-1.2-api:2.9.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.httpcomponents:httpcore-nio:4.4.5:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.httpcomponents:httpcore:4.4.5:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.httpcomponents:httpclient:4.5.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.httpcomponents:httpasyncclient:4.1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: net.sf.jopt-simple:jopt-simple:5.0.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: joda-time:joda-time:2.9.9:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.netty:netty-all:4.1.10.Final:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-codec:commons-codec:1.10:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.vividsolutions:jts:1.13:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.typesafe:config:1.3.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:bijection-util_2.12:0.9.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:bijection-core_2.12:0.9.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.tdunning:t-digest:3.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.sksamuel.exts:exts_2.12:1.60.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.sksamuel.elastic4s:elastic4s-tcp_2.12:6.1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.sksamuel.elastic4s:elastic4s-http_2.12:6.1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.sksamuel.elastic4s:elastic4s-embedded_2.12:6.1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.sksamuel.elastic4s:elastic4s-core_2.12:6.1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.github.spullara.mustache.java:compiler:0.9.3:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.10:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.dataformat:jackson-dataformat-smile:2.9.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.9.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.carrotsearch:hppc:0.7.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: aopalliance:aopalliance:1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.fasterxml.jackson.datatype:jackson-datatype-joda:2.8.4:jar" level="project" />
     <orderEntry type="library" name="sbt: com.github.ben-manes.caffeine:caffeine:2.3.4:jar" level="project" />
     <orderEntry type="library" name="sbt: com.github.nscala-time:nscala-time_2.12:2.14.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.github.spullara.mustache.java:compiler:0.8.18:jar" level="project" />
     <orderEntry type="library" name="sbt: com.google.code.findbugs:jsr305:3.0.1:jar" level="project" />
     <orderEntry type="library" name="sbt: com.google.guava:guava:19.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.google.inject:guice:4.0:jar" level="project" />
@@ -49,23 +105,28 @@
     <orderEntry type="library" name="sbt: com.twitter:finagle-http_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-init_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-mux_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-mysql_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-netty3-http_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-netty3_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-netty4-http_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-netty4_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-redis_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-stats_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-thrift_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finagle-thriftmux_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-toggle_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-tunable_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finagle-zipkin-core_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finatra-http_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finatra-jackson_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:finatra-thrift_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:finatra-utils_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:inject-app_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:inject-core_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:inject-modules_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:inject-server_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:inject-slf4j_2.12:17.12.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.twitter:inject-thrift_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:inject-utils_2.12:17.12.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:libthrift:0.5.0-7:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:scrooge-core_2.12:17.12.0:jar" level="project" />
@@ -104,9 +165,7 @@
     <orderEntry type="library" name="sbt: io.netty:netty-transport-native-unix-common:4.1.16.Final:jar" level="project" />
     <orderEntry type="library" name="sbt: javax.inject:javax.inject:1:jar" level="project" />
     <orderEntry type="library" name="sbt: javax.servlet:servlet-api:2.5:jar" level="project" />
-    <orderEntry type="library" name="sbt: joda-time:joda-time:2.7:jar" level="project" />
     <orderEntry type="library" name="sbt: net.codingwell:scala-guice_2.12:4.1.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.joda:joda-convert:1.2:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-compiler:2.12.4:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.12.4:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-reflect:2.12.4:jar" level="project" />
@@ -116,7 +175,6 @@
     <orderEntry type="library" name="sbt: org.slf4j:jcl-over-slf4j:1.7.21:jar" level="project" />
     <orderEntry type="library" name="sbt: org.slf4j:jul-to-slf4j:1.7.21:jar" level="project" />
     <orderEntry type="library" name="sbt: org.slf4j:log4j-over-slf4j:1.7.21:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.slf4j:slf4j-api:1.7.21:jar" level="project" />
     <orderEntry type="module-library">
       <library name="sbt: unmanaged-sources-and-docs">
         <CLASSES />
@@ -126,5 +184,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="sbt: org.joda:joda-convert:1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-logging:commons-logging:1.1.3:jar" level="project" />
   </component>
 </module>

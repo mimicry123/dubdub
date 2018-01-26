@@ -174,4 +174,110 @@ class UserService$FinagleClient(
       }
     }
   }
+  private[this] object __stats_login {
+    val RequestsCounter = scopedStats.scope("login").counter("requests")
+    val SuccessCounter = scopedStats.scope("login").counter("success")
+    val FailuresCounter = scopedStats.scope("login").counter("failures")
+    val FailuresScope = scopedStats.scope("login").scope("failures")
+  }
+  val loginUserServiceReplyDeserializer: Array[Byte] => _root_.com.twitter.util.Try[com.aroonpa.thrift.OptionalUser] = {
+    response: Array[Byte] => {
+      val result = decodeResponse(response, Login.Result)
+  
+      result.firstException() match {
+        case Some(exception) => _root_.com.twitter.util.Throw(setServiceName(exception))
+        case _ => result.successField match {
+          case Some(success) => _root_.com.twitter.util.Return(success)
+          case _ => _root_.com.twitter.util.Throw(missingResult("login"))
+        }
+      }
+    }
+  }
+  
+  def login(login: com.aroonpa.thrift.Login): Future[com.aroonpa.thrift.OptionalUser] = {
+    __stats_login.RequestsCounter.incr()
+    val inputArgs = Login.Args(login)
+  
+    val serdeCtx = new _root_.com.twitter.finagle.thrift.DeserializeCtx[com.aroonpa.thrift.OptionalUser](inputArgs, loginUserServiceReplyDeserializer)
+    _root_.com.twitter.finagle.context.Contexts.local.let(
+      _root_.com.twitter.finagle.thrift.DeserializeCtx.Key,
+      serdeCtx,
+      _root_.com.twitter.finagle.thrift.Headers.Request.Key,
+      _root_.com.twitter.finagle.thrift.Headers.Request.newValues
+    ) {
+      val serialized = encodeRequest("login", inputArgs)
+      this.service(serialized).flatMap { response =>
+        Future.const(serdeCtx.deserialize(response))
+      }.respond { response =>
+        val responseClass = responseClassifier.applyOrElse(
+          ctfs.ReqRep(inputArgs, response),
+          ctfs.ResponseClassifier.Default)
+        responseClass match {
+          case ctfs.ResponseClass.Successful(_) =>
+            __stats_login.SuccessCounter.incr()
+          case ctfs.ResponseClass.Failed(_) =>
+            __stats_login.FailuresCounter.incr()
+            response match {
+              case Throw(ex) =>
+                setServiceName(ex)
+                __stats_login.FailuresScope.counter(Throwables.mkString(ex): _*).incr()
+              case _ =>
+            }
+        }
+      }
+    }
+  }
+  private[this] object __stats_authToUser {
+    val RequestsCounter = scopedStats.scope("authToUser").counter("requests")
+    val SuccessCounter = scopedStats.scope("authToUser").counter("success")
+    val FailuresCounter = scopedStats.scope("authToUser").counter("failures")
+    val FailuresScope = scopedStats.scope("authToUser").scope("failures")
+  }
+  val authToUserUserServiceReplyDeserializer: Array[Byte] => _root_.com.twitter.util.Try[com.aroonpa.thrift.OptionalUser] = {
+    response: Array[Byte] => {
+      val result = decodeResponse(response, AuthToUser.Result)
+  
+      result.firstException() match {
+        case Some(exception) => _root_.com.twitter.util.Throw(setServiceName(exception))
+        case _ => result.successField match {
+          case Some(success) => _root_.com.twitter.util.Return(success)
+          case _ => _root_.com.twitter.util.Throw(missingResult("authToUser"))
+        }
+      }
+    }
+  }
+  
+  def authToUser(token: String): Future[com.aroonpa.thrift.OptionalUser] = {
+    __stats_authToUser.RequestsCounter.incr()
+    val inputArgs = AuthToUser.Args(token)
+  
+    val serdeCtx = new _root_.com.twitter.finagle.thrift.DeserializeCtx[com.aroonpa.thrift.OptionalUser](inputArgs, authToUserUserServiceReplyDeserializer)
+    _root_.com.twitter.finagle.context.Contexts.local.let(
+      _root_.com.twitter.finagle.thrift.DeserializeCtx.Key,
+      serdeCtx,
+      _root_.com.twitter.finagle.thrift.Headers.Request.Key,
+      _root_.com.twitter.finagle.thrift.Headers.Request.newValues
+    ) {
+      val serialized = encodeRequest("authToUser", inputArgs)
+      this.service(serialized).flatMap { response =>
+        Future.const(serdeCtx.deserialize(response))
+      }.respond { response =>
+        val responseClass = responseClassifier.applyOrElse(
+          ctfs.ReqRep(inputArgs, response),
+          ctfs.ResponseClassifier.Default)
+        responseClass match {
+          case ctfs.ResponseClass.Successful(_) =>
+            __stats_authToUser.SuccessCounter.incr()
+          case ctfs.ResponseClass.Failed(_) =>
+            __stats_authToUser.FailuresCounter.incr()
+            response match {
+              case Throw(ex) =>
+                setServiceName(ex)
+                __stats_authToUser.FailuresScope.counter(Throwables.mkString(ex): _*).incr()
+              case _ =>
+            }
+        }
+      }
+    }
+  }
 }

@@ -47,6 +47,10 @@ import scala.language.higherKinds
 trait UserService[+MM[_]] extends ThriftService {
   
   def addUser(user: com.aroonpa.thrift.User): MM[com.aroonpa.thrift.User]
+  
+  def login(login: com.aroonpa.thrift.Login): MM[com.aroonpa.thrift.OptionalUser]
+  
+  def authToUser(token: String): MM[com.aroonpa.thrift.OptionalUser]
 }
 
 
@@ -58,8 +62,14 @@ object UserService { self =>
     extends ToThriftService
     with _root_.com.twitter.finagle.thrift.ThriftServiceIface.Filterable[ServicePerEndpoint] {
     def addUser : _root_.com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType]
+    def login : _root_.com.twitter.finagle.Service[self.Login.Args, self.Login.SuccessType]
+    def authToUser : _root_.com.twitter.finagle.Service[self.AuthToUser.Args, self.AuthToUser.SuccessType]
 
     def withAddUser(addUser : _root_.com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType]): ServicePerEndpoint = this
+
+    def withLogin(login : _root_.com.twitter.finagle.Service[self.Login.Args, self.Login.SuccessType]): ServicePerEndpoint = this
+
+    def withAuthToUser(authToUser : _root_.com.twitter.finagle.Service[self.AuthToUser.Args, self.AuthToUser.SuccessType]): ServicePerEndpoint = this
 
     /**
      * Prepends the given type-agnostic `Filter` to all of the `Services`
@@ -78,8 +88,14 @@ object UserService { self =>
     extends ToThriftService
     with _root_.com.twitter.finagle.thrift.service.Filterable[ReqRepServicePerEndpoint] {
     def addUser : _root_.com.twitter.finagle.Service[com.twitter.scrooge.Request[self.AddUser.Args], _root_.com.twitter.scrooge.Response[self.AddUser.SuccessType]]
+    def login : _root_.com.twitter.finagle.Service[com.twitter.scrooge.Request[self.Login.Args], _root_.com.twitter.scrooge.Response[self.Login.SuccessType]]
+    def authToUser : _root_.com.twitter.finagle.Service[com.twitter.scrooge.Request[self.AuthToUser.Args], _root_.com.twitter.scrooge.Response[self.AuthToUser.SuccessType]]
 
     def withAddUser(addUser : _root_.com.twitter.finagle.Service[com.twitter.scrooge.Request[self.AddUser.Args], _root_.com.twitter.scrooge.Response[self.AddUser.SuccessType]]): ReqRepServicePerEndpoint = this
+
+    def withLogin(login : _root_.com.twitter.finagle.Service[com.twitter.scrooge.Request[self.Login.Args], _root_.com.twitter.scrooge.Response[self.Login.SuccessType]]): ReqRepServicePerEndpoint = this
+
+    def withAuthToUser(authToUser : _root_.com.twitter.finagle.Service[com.twitter.scrooge.Request[self.AuthToUser.Args], _root_.com.twitter.scrooge.Response[self.AuthToUser.SuccessType]]): ReqRepServicePerEndpoint = this
 
     /**
      * Prepends the given type-agnostic `Filter` to all of the `Services`
@@ -97,6 +113,8 @@ object UserService { self =>
   @deprecated("Use ServicePerEndpoint", "2017-11-07")
   trait BaseServiceIface extends ToThriftService {
     def addUser : com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType]
+    def login : com.twitter.finagle.Service[self.Login.Args, self.Login.SuccessType]
+    def authToUser : com.twitter.finagle.Service[self.AuthToUser.Args, self.AuthToUser.SuccessType]
 
     def toThriftService: ThriftService = new MethodIface(this)
   }
@@ -104,21 +122,37 @@ object UserService { self =>
   object ServicePerEndpoint {
 
     def apply(
-      addUser : _root_.com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType]
-    ): ServicePerEndpoint = new ServicePerEndpointImpl(addUser)
+      addUser : _root_.com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType],
+      login : _root_.com.twitter.finagle.Service[self.Login.Args, self.Login.SuccessType],
+      authToUser : _root_.com.twitter.finagle.Service[self.AuthToUser.Args, self.AuthToUser.SuccessType]
+    ): ServicePerEndpoint = new ServicePerEndpointImpl(addUser, login, authToUser)
 
     private final class ServicePerEndpointImpl(
-      override val addUser : _root_.com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType]
+      override val addUser : _root_.com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType],
+      override val login : _root_.com.twitter.finagle.Service[self.Login.Args, self.Login.SuccessType],
+      override val authToUser : _root_.com.twitter.finagle.Service[self.AuthToUser.Args, self.AuthToUser.SuccessType]
     ) extends ServicePerEndpoint {
 
       override def withAddUser(
         addUser : _root_.com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType]
       ): ServicePerEndpoint =
-        new ServicePerEndpointImpl(addUser)
+        new ServicePerEndpointImpl(addUser, login, authToUser)
+
+      override def withLogin(
+        login : _root_.com.twitter.finagle.Service[self.Login.Args, self.Login.SuccessType]
+      ): ServicePerEndpoint =
+        new ServicePerEndpointImpl(addUser, login, authToUser)
+
+      override def withAuthToUser(
+        authToUser : _root_.com.twitter.finagle.Service[self.AuthToUser.Args, self.AuthToUser.SuccessType]
+      ): ServicePerEndpoint =
+        new ServicePerEndpointImpl(addUser, login, authToUser)
 
       override def filtered(filter: _root_.com.twitter.finagle.Filter.TypeAgnostic): ServicePerEndpoint =
         new ServicePerEndpointImpl(
-          addUser = filter.toFilter.andThen(addUser)
+          addUser = filter.toFilter.andThen(addUser),
+          login = filter.toFilter.andThen(login),
+          authToUser = filter.toFilter.andThen(authToUser)
         )
     }
   }
@@ -126,29 +160,45 @@ object UserService { self =>
   object ReqRepServicePerEndpoint {
 
     def apply(
-      addUser :  _root_.com.twitter.finagle.Service[_root_.com.twitter.scrooge.Request[self.AddUser.Args], _root_.com.twitter.scrooge.Response[self.AddUser.SuccessType]]
+      addUser :  _root_.com.twitter.finagle.Service[_root_.com.twitter.scrooge.Request[self.AddUser.Args], _root_.com.twitter.scrooge.Response[self.AddUser.SuccessType]],
+      login :  _root_.com.twitter.finagle.Service[_root_.com.twitter.scrooge.Request[self.Login.Args], _root_.com.twitter.scrooge.Response[self.Login.SuccessType]],
+      authToUser :  _root_.com.twitter.finagle.Service[_root_.com.twitter.scrooge.Request[self.AuthToUser.Args], _root_.com.twitter.scrooge.Response[self.AuthToUser.SuccessType]]
     ): ReqRepServicePerEndpoint =
-      new ReqRepServicePerEndpointImpl(addUser)
+      new ReqRepServicePerEndpointImpl(addUser, login, authToUser)
 
     private final class ReqRepServicePerEndpointImpl(
-      override val addUser : _root_.com.twitter.finagle.Service[_root_.com.twitter.scrooge.Request[self.AddUser.Args], _root_.com.twitter.scrooge.Response[self.AddUser.SuccessType]]
+      override val addUser : _root_.com.twitter.finagle.Service[_root_.com.twitter.scrooge.Request[self.AddUser.Args], _root_.com.twitter.scrooge.Response[self.AddUser.SuccessType]],
+      override val login : _root_.com.twitter.finagle.Service[_root_.com.twitter.scrooge.Request[self.Login.Args], _root_.com.twitter.scrooge.Response[self.Login.SuccessType]],
+      override val authToUser : _root_.com.twitter.finagle.Service[_root_.com.twitter.scrooge.Request[self.AuthToUser.Args], _root_.com.twitter.scrooge.Response[self.AuthToUser.SuccessType]]
     ) extends ReqRepServicePerEndpoint {
 
       override def withAddUser(
         addUser : _root_.com.twitter.finagle.Service[com.twitter.scrooge.Request[self.AddUser.Args], _root_.com.twitter.scrooge.Response[self.AddUser.SuccessType]]
       ): ReqRepServicePerEndpoint =
-        new ReqRepServicePerEndpointImpl(addUser)
+        new ReqRepServicePerEndpointImpl(addUser, login, authToUser)
+      override def withLogin(
+        login : _root_.com.twitter.finagle.Service[com.twitter.scrooge.Request[self.Login.Args], _root_.com.twitter.scrooge.Response[self.Login.SuccessType]]
+      ): ReqRepServicePerEndpoint =
+        new ReqRepServicePerEndpointImpl(addUser, login, authToUser)
+      override def withAuthToUser(
+        authToUser : _root_.com.twitter.finagle.Service[com.twitter.scrooge.Request[self.AuthToUser.Args], _root_.com.twitter.scrooge.Response[self.AuthToUser.SuccessType]]
+      ): ReqRepServicePerEndpoint =
+        new ReqRepServicePerEndpointImpl(addUser, login, authToUser)
 
       override def filtered(filter: com.twitter.finagle.Filter.TypeAgnostic): ReqRepServicePerEndpoint =
         new ReqRepServicePerEndpointImpl(
-          addUser = filter.toFilter.andThen(addUser)
+          addUser = filter.toFilter.andThen(addUser),
+          login = filter.toFilter.andThen(login),
+          authToUser = filter.toFilter.andThen(authToUser)
         )
     }
   }
 
   @deprecated("Use ServicePerEndpoint", "2017-11-07")
   case class ServiceIface(
-    addUser : com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType]
+    addUser : com.twitter.finagle.Service[self.AddUser.Args, self.AddUser.SuccessType],
+    login : com.twitter.finagle.Service[self.Login.Args, self.Login.SuccessType],
+    authToUser : com.twitter.finagle.Service[self.AuthToUser.Args, self.AuthToUser.SuccessType]
   ) extends BaseServiceIface
     with com.twitter.finagle.thrift.ThriftServiceIface.Filterable[ServiceIface] {
 
@@ -158,7 +208,9 @@ object UserService { self =>
      */
     def filtered(filter: com.twitter.finagle.Filter.TypeAgnostic): ServiceIface =
       copy(
-        addUser = filter.toFilter.andThen(addUser)
+        addUser = filter.toFilter.andThen(addUser),
+        login = filter.toFilter.andThen(login),
+        authToUser = filter.toFilter.andThen(authToUser)
       )
   }
 
@@ -169,7 +221,9 @@ object UserService { self =>
         clientParam: RichClientParam
       ): ServicePerEndpoint =
         ServicePerEndpoint(
-          addUser = ThriftServiceIface(self.AddUser, thriftService, clientParam)
+          addUser = ThriftServiceIface(self.AddUser, thriftService, clientParam),
+          login = ThriftServiceIface(self.Login, thriftService, clientParam),
+          authToUser = ThriftServiceIface(self.AuthToUser, thriftService, clientParam)
         )
   }
 
@@ -180,7 +234,9 @@ object UserService { self =>
         clientParam: RichClientParam
       ): ReqRepServicePerEndpoint =
         ReqRepServicePerEndpoint(
-          addUser = _root_.com.twitter.finagle.thrift.service.ThriftReqRepServicePerEndpoint(self.AddUser, thriftService, clientParam)
+          addUser = _root_.com.twitter.finagle.thrift.service.ThriftReqRepServicePerEndpoint(self.AddUser, thriftService, clientParam),
+          login = _root_.com.twitter.finagle.thrift.service.ThriftReqRepServicePerEndpoint(self.Login, thriftService, clientParam),
+          authToUser = _root_.com.twitter.finagle.thrift.service.ThriftReqRepServicePerEndpoint(self.AuthToUser, thriftService, clientParam)
         )
   }
 
@@ -192,7 +248,9 @@ object UserService { self =>
         clientParam: RichClientParam
       ): ServiceIface =
         ServiceIface(
-          addUser = ThriftServiceIface(self.AddUser, binaryService, clientParam)
+          addUser = ThriftServiceIface(self.AddUser, binaryService, clientParam),
+          login = ThriftServiceIface(self.Login, binaryService, clientParam),
+          authToUser = ThriftServiceIface(self.AuthToUser, binaryService, clientParam)
         )
   }
 
@@ -390,6 +448,10 @@ object UserService { self =>
       val Struct = new TStruct("addUser_result")
       val SuccessField = new TField("success", TType.STRUCT, 0)
       val SuccessFieldManifest = implicitly[Manifest[com.aroonpa.thrift.User]]
+      val UserIdAlreadyCreatedField = new TField("userIdAlreadyCreated", TType.STRUCT, 1)
+      val UserIdAlreadyCreatedFieldManifest = implicitly[Manifest[com.aroonpa.thrift.UserIdAlreadyCreated]]
+      val UserEmailAlreadyCreatedField = new TField("userEmailAlreadyCreated", TType.STRUCT, 2)
+      val UserEmailAlreadyCreatedFieldManifest = implicitly[Manifest[com.aroonpa.thrift.UserEmailAlreadyCreated]]
     
       /**
        * Field information in declaration order.
@@ -400,6 +462,28 @@ object UserService { self =>
           true,
           false,
           SuccessFieldManifest,
+          _root_.scala.None,
+          _root_.scala.None,
+          immutable$Map.empty[String, String],
+          immutable$Map.empty[String, String],
+          None
+        ),
+        new ThriftStructFieldInfo(
+          UserIdAlreadyCreatedField,
+          true,
+          false,
+          UserIdAlreadyCreatedFieldManifest,
+          _root_.scala.None,
+          _root_.scala.None,
+          immutable$Map.empty[String, String],
+          immutable$Map.empty[String, String],
+          None
+        ),
+        new ThriftStructFieldInfo(
+          UserEmailAlreadyCreatedField,
+          true,
+          false,
+          UserEmailAlreadyCreatedFieldManifest,
           _root_.scala.None,
           _root_.scala.None,
           immutable$Map.empty[String, String],
@@ -425,6 +509,20 @@ object UserService { self =>
               field.map { field =>
                 com.aroonpa.thrift.User.withoutPassthroughFields(field)
               }
+            },
+          userIdAlreadyCreated =
+            {
+              val field = original.userIdAlreadyCreated
+              field.map { field =>
+                com.aroonpa.thrift.UserIdAlreadyCreated.withoutPassthroughFields(field)
+              }
+            },
+          userEmailAlreadyCreated =
+            {
+              val field = original.userEmailAlreadyCreated
+              field.map { field =>
+                com.aroonpa.thrift.UserEmailAlreadyCreated.withoutPassthroughFields(field)
+              }
             }
         )
     
@@ -435,6 +533,8 @@ object UserService { self =>
     
       override def decode(_iprot: TProtocol): Result = {
         var success: _root_.scala.Option[com.aroonpa.thrift.User] = _root_.scala.None
+        var userIdAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserIdAlreadyCreated] = _root_.scala.None
+        var userEmailAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserEmailAlreadyCreated] = _root_.scala.None
         var _passthroughFields: Builder[(Short, TFieldBlob), immutable$Map[Short, TFieldBlob]] = null
         var _done = false
     
@@ -458,6 +558,32 @@ object UserService { self =>
                       )
                     )
                 }
+              case 1 =>
+                _field.`type` match {
+                  case TType.STRUCT =>
+                    userIdAlreadyCreated = _root_.scala.Some(readUserIdAlreadyCreatedValue(_iprot))
+                  case _actualType =>
+                    val _expectedType = TType.STRUCT
+                    throw new TProtocolException(
+                      "Received wrong type for field 'userIdAlreadyCreated' (expected=%s, actual=%s).".format(
+                        ttypeToString(_expectedType),
+                        ttypeToString(_actualType)
+                      )
+                    )
+                }
+              case 2 =>
+                _field.`type` match {
+                  case TType.STRUCT =>
+                    userEmailAlreadyCreated = _root_.scala.Some(readUserEmailAlreadyCreatedValue(_iprot))
+                  case _actualType =>
+                    val _expectedType = TType.STRUCT
+                    throw new TProtocolException(
+                      "Received wrong type for field 'userEmailAlreadyCreated' (expected=%s, actual=%s).".format(
+                        ttypeToString(_expectedType),
+                        ttypeToString(_actualType)
+                      )
+                    )
+                }
               case _ =>
                 if (_passthroughFields == null)
                   _passthroughFields = immutable$Map.newBuilder[Short, TFieldBlob]
@@ -470,6 +596,8 @@ object UserService { self =>
     
         new Result(
           success,
+          userIdAlreadyCreated,
+          userEmailAlreadyCreated,
           if (_passthroughFields == null)
             NoPassthroughFields
           else
@@ -478,13 +606,17 @@ object UserService { self =>
       }
     
       def apply(
-        success: _root_.scala.Option[com.aroonpa.thrift.User] = _root_.scala.None
+        success: _root_.scala.Option[com.aroonpa.thrift.User] = _root_.scala.None,
+        userIdAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserIdAlreadyCreated] = _root_.scala.None,
+        userEmailAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserEmailAlreadyCreated] = _root_.scala.None
       ): Result =
         new Result(
-          success
+          success,
+          userIdAlreadyCreated,
+          userEmailAlreadyCreated
         )
     
-      def unapply(_item: Result): _root_.scala.Option[_root_.scala.Option[com.aroonpa.thrift.User]] = _root_.scala.Some(_item.success)
+      def unapply(_item: Result): _root_.scala.Option[_root_.scala.Tuple3[Option[com.aroonpa.thrift.User], Option[com.aroonpa.thrift.UserIdAlreadyCreated], Option[com.aroonpa.thrift.UserEmailAlreadyCreated]]] = _root_.scala.Some(_item.toTuple)
     
     
       @inline private[thrift] def readSuccessValue(_iprot: TProtocol): com.aroonpa.thrift.User = {
@@ -501,35 +633,81 @@ object UserService { self =>
         success_item.write(_oprot)
       }
     
+      @inline private[thrift] def readUserIdAlreadyCreatedValue(_iprot: TProtocol): com.aroonpa.thrift.UserIdAlreadyCreated = {
+        com.aroonpa.thrift.UserIdAlreadyCreated.decode(_iprot)
+      }
+    
+      @inline private def writeUserIdAlreadyCreatedField(userIdAlreadyCreated_item: com.aroonpa.thrift.UserIdAlreadyCreated, _oprot: TProtocol): Unit = {
+        _oprot.writeFieldBegin(UserIdAlreadyCreatedField)
+        writeUserIdAlreadyCreatedValue(userIdAlreadyCreated_item, _oprot)
+        _oprot.writeFieldEnd()
+      }
+    
+      @inline private def writeUserIdAlreadyCreatedValue(userIdAlreadyCreated_item: com.aroonpa.thrift.UserIdAlreadyCreated, _oprot: TProtocol): Unit = {
+        userIdAlreadyCreated_item.write(_oprot)
+      }
+    
+      @inline private[thrift] def readUserEmailAlreadyCreatedValue(_iprot: TProtocol): com.aroonpa.thrift.UserEmailAlreadyCreated = {
+        com.aroonpa.thrift.UserEmailAlreadyCreated.decode(_iprot)
+      }
+    
+      @inline private def writeUserEmailAlreadyCreatedField(userEmailAlreadyCreated_item: com.aroonpa.thrift.UserEmailAlreadyCreated, _oprot: TProtocol): Unit = {
+        _oprot.writeFieldBegin(UserEmailAlreadyCreatedField)
+        writeUserEmailAlreadyCreatedValue(userEmailAlreadyCreated_item, _oprot)
+        _oprot.writeFieldEnd()
+      }
+    
+      @inline private def writeUserEmailAlreadyCreatedValue(userEmailAlreadyCreated_item: com.aroonpa.thrift.UserEmailAlreadyCreated, _oprot: TProtocol): Unit = {
+        userEmailAlreadyCreated_item.write(_oprot)
+      }
+    
     
     }
     
     class Result(
         val success: _root_.scala.Option[com.aroonpa.thrift.User],
+        val userIdAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserIdAlreadyCreated],
+        val userEmailAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserEmailAlreadyCreated],
         val _passthroughFields: immutable$Map[Short, TFieldBlob])
       extends ThriftResponse[com.aroonpa.thrift.User] with ThriftStruct
-      with _root_.scala.Product1[Option[com.aroonpa.thrift.User]]
+      with _root_.scala.Product3[Option[com.aroonpa.thrift.User], Option[com.aroonpa.thrift.UserIdAlreadyCreated], Option[com.aroonpa.thrift.UserEmailAlreadyCreated]]
       with HasThriftStructCodec3[Result]
       with java.io.Serializable
     {
       import Result._
       def this(
-        success: _root_.scala.Option[com.aroonpa.thrift.User] = _root_.scala.None
+        success: _root_.scala.Option[com.aroonpa.thrift.User] = _root_.scala.None,
+        userIdAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserIdAlreadyCreated] = _root_.scala.None,
+        userEmailAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserEmailAlreadyCreated] = _root_.scala.None
       ) = this(
         success,
+        userIdAlreadyCreated,
+        userEmailAlreadyCreated,
         Map.empty
       )
     
       def _1 = success
+      def _2 = userIdAlreadyCreated
+      def _3 = userEmailAlreadyCreated
+    
+      def toTuple: _root_.scala.Tuple3[Option[com.aroonpa.thrift.User], Option[com.aroonpa.thrift.UserIdAlreadyCreated], Option[com.aroonpa.thrift.UserEmailAlreadyCreated]] = {
+        (
+          success,
+          userIdAlreadyCreated,
+          userEmailAlreadyCreated
+        )
+      }
     
       def successField: Option[com.aroonpa.thrift.User] = success
-      def exceptionFields: Iterable[Option[com.twitter.scrooge.ThriftException]] = Seq()
+      def exceptionFields: Iterable[Option[com.twitter.scrooge.ThriftException]] = Seq(userIdAlreadyCreated, userEmailAlreadyCreated)
     
     
       override def write(_oprot: TProtocol): Unit = {
         Result.validate(this)
         _oprot.writeStructBegin(Struct)
         if (success.isDefined) writeSuccessField(success.get, _oprot)
+        if (userIdAlreadyCreated.isDefined) writeUserIdAlreadyCreatedField(userIdAlreadyCreated.get, _oprot)
+        if (userEmailAlreadyCreated.isDefined) writeUserEmailAlreadyCreatedField(userEmailAlreadyCreated.get, _oprot)
         if (_passthroughFields.nonEmpty) {
           _passthroughFields.values.foreach { _.write(_oprot) }
         }
@@ -539,10 +717,14 @@ object UserService { self =>
     
       def copy(
         success: _root_.scala.Option[com.aroonpa.thrift.User] = this.success,
+        userIdAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserIdAlreadyCreated] = this.userIdAlreadyCreated,
+        userEmailAlreadyCreated: _root_.scala.Option[com.aroonpa.thrift.UserEmailAlreadyCreated] = this.userEmailAlreadyCreated,
         _passthroughFields: immutable$Map[Short, TFieldBlob] = this._passthroughFields
       ): Result =
         new Result(
           success,
+          userIdAlreadyCreated,
+          userEmailAlreadyCreated,
           _passthroughFields
         )
     
@@ -562,10 +744,12 @@ object UserService { self =>
       override def toString: String = _root_.scala.runtime.ScalaRunTime._toString(this)
     
     
-      override def productArity: Int = 1
+      override def productArity: Int = 3
     
       override def productElement(n: Int): Any = n match {
         case 0 => this.success
+        case 1 => this.userIdAlreadyCreated
+        case 2 => this.userEmailAlreadyCreated
         case _ => throw new IndexOutOfBoundsException(n.toString)
       }
     
@@ -611,11 +795,911 @@ object UserService { self =>
   val addUser$result = AddUser.Result
   type addUser$result = AddUser.Result
 
+  object Login extends com.twitter.scrooge.ThriftMethod {
+    
+    object Args extends ThriftStructCodec3[Args] {
+      val NoPassthroughFields: immutable$Map[Short, TFieldBlob] = immutable$Map.empty[Short, TFieldBlob]
+      val Struct = new TStruct("login_args")
+      val LoginField = new TField("login", TType.STRUCT, 1)
+      val LoginFieldManifest = implicitly[Manifest[com.aroonpa.thrift.Login]]
+    
+      /**
+       * Field information in declaration order.
+       */
+      lazy val fieldInfos: scala.List[ThriftStructFieldInfo] = scala.List[ThriftStructFieldInfo](
+        new ThriftStructFieldInfo(
+          LoginField,
+          false,
+          false,
+          LoginFieldManifest,
+          _root_.scala.None,
+          _root_.scala.None,
+          immutable$Map.empty[String, String],
+          immutable$Map.empty[String, String],
+          None
+        )
+      )
+    
+      lazy val structAnnotations: immutable$Map[String, String] =
+        immutable$Map.empty[String, String]
+    
+      /**
+       * Checks that all required fields are non-null.
+       */
+      def validate(_item: Args): Unit = {
+      }
+    
+      def withoutPassthroughFields(original: Args): Args =
+        new Args(
+          login =
+            {
+              val field = original.login
+              com.aroonpa.thrift.Login.withoutPassthroughFields(field)
+            }
+        )
+    
+      override def encode(_item: Args, _oproto: TProtocol): Unit = {
+        _item.write(_oproto)
+      }
+    
+    
+      override def decode(_iprot: TProtocol): Args = {
+        var login: com.aroonpa.thrift.Login = null
+        var _passthroughFields: Builder[(Short, TFieldBlob), immutable$Map[Short, TFieldBlob]] = null
+        var _done = false
+    
+        _iprot.readStructBegin()
+        while (!_done) {
+          val _field = _iprot.readFieldBegin()
+          if (_field.`type` == TType.STOP) {
+            _done = true
+          } else {
+            _field.id match {
+              case 1 =>
+                _field.`type` match {
+                  case TType.STRUCT =>
+                    login = readLoginValue(_iprot)
+                  case _actualType =>
+                    val _expectedType = TType.STRUCT
+                    throw new TProtocolException(
+                      "Received wrong type for field 'login' (expected=%s, actual=%s).".format(
+                        ttypeToString(_expectedType),
+                        ttypeToString(_actualType)
+                      )
+                    )
+                }
+              case _ =>
+                if (_passthroughFields == null)
+                  _passthroughFields = immutable$Map.newBuilder[Short, TFieldBlob]
+                _passthroughFields += (_field.id -> TFieldBlob.read(_field, _iprot))
+            }
+            _iprot.readFieldEnd()
+          }
+        }
+        _iprot.readStructEnd()
+    
+        new Args(
+          login,
+          if (_passthroughFields == null)
+            NoPassthroughFields
+          else
+            _passthroughFields.result()
+        )
+      }
+    
+      def apply(
+        login: com.aroonpa.thrift.Login
+      ): Args =
+        new Args(
+          login
+        )
+    
+      def unapply(_item: Args): _root_.scala.Option[com.aroonpa.thrift.Login] = _root_.scala.Some(_item.login)
+    
+    
+      @inline private[thrift] def readLoginValue(_iprot: TProtocol): com.aroonpa.thrift.Login = {
+        com.aroonpa.thrift.Login.decode(_iprot)
+      }
+    
+      @inline private def writeLoginField(login_item: com.aroonpa.thrift.Login, _oprot: TProtocol): Unit = {
+        _oprot.writeFieldBegin(LoginField)
+        writeLoginValue(login_item, _oprot)
+        _oprot.writeFieldEnd()
+      }
+    
+      @inline private def writeLoginValue(login_item: com.aroonpa.thrift.Login, _oprot: TProtocol): Unit = {
+        login_item.write(_oprot)
+      }
+    
+    
+    }
+    
+    class Args(
+        val login: com.aroonpa.thrift.Login,
+        val _passthroughFields: immutable$Map[Short, TFieldBlob])
+      extends ThriftStruct
+      with _root_.scala.Product1[com.aroonpa.thrift.Login]
+      with HasThriftStructCodec3[Args]
+      with java.io.Serializable
+    {
+      import Args._
+      def this(
+        login: com.aroonpa.thrift.Login
+      ) = this(
+        login,
+        Map.empty
+      )
+    
+      def _1 = login
+    
+    
+    
+      override def write(_oprot: TProtocol): Unit = {
+        Args.validate(this)
+        _oprot.writeStructBegin(Struct)
+        if (login ne null) writeLoginField(login, _oprot)
+        if (_passthroughFields.nonEmpty) {
+          _passthroughFields.values.foreach { _.write(_oprot) }
+        }
+        _oprot.writeFieldStop()
+        _oprot.writeStructEnd()
+      }
+    
+      def copy(
+        login: com.aroonpa.thrift.Login = this.login,
+        _passthroughFields: immutable$Map[Short, TFieldBlob] = this._passthroughFields
+      ): Args =
+        new Args(
+          login,
+          _passthroughFields
+        )
+    
+      override def canEqual(other: Any): Boolean = other.isInstanceOf[Args]
+    
+      private def _equals(x: Args, y: Args): Boolean =
+          x.productArity == y.productArity &&
+          x.productIterator.sameElements(y.productIterator)
+    
+      override def equals(other: Any): Boolean =
+        canEqual(other) &&
+          _equals(this, other.asInstanceOf[Args]) &&
+          _passthroughFields == other.asInstanceOf[Args]._passthroughFields
+    
+      override def hashCode: Int = _root_.scala.runtime.ScalaRunTime._hashCode(this)
+    
+      override def toString: String = _root_.scala.runtime.ScalaRunTime._toString(this)
+    
+    
+      override def productArity: Int = 1
+    
+      override def productElement(n: Int): Any = n match {
+        case 0 => this.login
+        case _ => throw new IndexOutOfBoundsException(n.toString)
+      }
+    
+      override def productPrefix: String = "Args"
+    
+      def _codec: ThriftStructCodec3[Args] = Args
+    }
+
+    type SuccessType = com.aroonpa.thrift.OptionalUser
+    
+    object Result extends ThriftStructCodec3[Result] {
+      val NoPassthroughFields: immutable$Map[Short, TFieldBlob] = immutable$Map.empty[Short, TFieldBlob]
+      val Struct = new TStruct("login_result")
+      val SuccessField = new TField("success", TType.STRUCT, 0)
+      val SuccessFieldManifest = implicitly[Manifest[com.aroonpa.thrift.OptionalUser]]
+      val AuthFailedField = new TField("authFailed", TType.STRUCT, 1)
+      val AuthFailedFieldManifest = implicitly[Manifest[com.aroonpa.thrift.AuthFailed]]
+    
+      /**
+       * Field information in declaration order.
+       */
+      lazy val fieldInfos: scala.List[ThriftStructFieldInfo] = scala.List[ThriftStructFieldInfo](
+        new ThriftStructFieldInfo(
+          SuccessField,
+          true,
+          false,
+          SuccessFieldManifest,
+          _root_.scala.None,
+          _root_.scala.None,
+          immutable$Map.empty[String, String],
+          immutable$Map.empty[String, String],
+          None
+        ),
+        new ThriftStructFieldInfo(
+          AuthFailedField,
+          true,
+          false,
+          AuthFailedFieldManifest,
+          _root_.scala.None,
+          _root_.scala.None,
+          immutable$Map.empty[String, String],
+          immutable$Map.empty[String, String],
+          None
+        )
+      )
+    
+      lazy val structAnnotations: immutable$Map[String, String] =
+        immutable$Map.empty[String, String]
+    
+      /**
+       * Checks that all required fields are non-null.
+       */
+      def validate(_item: Result): Unit = {
+      }
+    
+      def withoutPassthroughFields(original: Result): Result =
+        new Result(
+          success =
+            {
+              val field = original.success
+              field.map { field =>
+                com.aroonpa.thrift.OptionalUser.withoutPassthroughFields(field)
+              }
+            },
+          authFailed =
+            {
+              val field = original.authFailed
+              field.map { field =>
+                com.aroonpa.thrift.AuthFailed.withoutPassthroughFields(field)
+              }
+            }
+        )
+    
+      override def encode(_item: Result, _oproto: TProtocol): Unit = {
+        _item.write(_oproto)
+      }
+    
+    
+      override def decode(_iprot: TProtocol): Result = {
+        var success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser] = _root_.scala.None
+        var authFailed: _root_.scala.Option[com.aroonpa.thrift.AuthFailed] = _root_.scala.None
+        var _passthroughFields: Builder[(Short, TFieldBlob), immutable$Map[Short, TFieldBlob]] = null
+        var _done = false
+    
+        _iprot.readStructBegin()
+        while (!_done) {
+          val _field = _iprot.readFieldBegin()
+          if (_field.`type` == TType.STOP) {
+            _done = true
+          } else {
+            _field.id match {
+              case 0 =>
+                _field.`type` match {
+                  case TType.STRUCT =>
+                    success = _root_.scala.Some(readSuccessValue(_iprot))
+                  case _actualType =>
+                    val _expectedType = TType.STRUCT
+                    throw new TProtocolException(
+                      "Received wrong type for field 'success' (expected=%s, actual=%s).".format(
+                        ttypeToString(_expectedType),
+                        ttypeToString(_actualType)
+                      )
+                    )
+                }
+              case 1 =>
+                _field.`type` match {
+                  case TType.STRUCT =>
+                    authFailed = _root_.scala.Some(readAuthFailedValue(_iprot))
+                  case _actualType =>
+                    val _expectedType = TType.STRUCT
+                    throw new TProtocolException(
+                      "Received wrong type for field 'authFailed' (expected=%s, actual=%s).".format(
+                        ttypeToString(_expectedType),
+                        ttypeToString(_actualType)
+                      )
+                    )
+                }
+              case _ =>
+                if (_passthroughFields == null)
+                  _passthroughFields = immutable$Map.newBuilder[Short, TFieldBlob]
+                _passthroughFields += (_field.id -> TFieldBlob.read(_field, _iprot))
+            }
+            _iprot.readFieldEnd()
+          }
+        }
+        _iprot.readStructEnd()
+    
+        new Result(
+          success,
+          authFailed,
+          if (_passthroughFields == null)
+            NoPassthroughFields
+          else
+            _passthroughFields.result()
+        )
+      }
+    
+      def apply(
+        success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser] = _root_.scala.None,
+        authFailed: _root_.scala.Option[com.aroonpa.thrift.AuthFailed] = _root_.scala.None
+      ): Result =
+        new Result(
+          success,
+          authFailed
+        )
+    
+      def unapply(_item: Result): _root_.scala.Option[_root_.scala.Tuple2[Option[com.aroonpa.thrift.OptionalUser], Option[com.aroonpa.thrift.AuthFailed]]] = _root_.scala.Some(_item.toTuple)
+    
+    
+      @inline private[thrift] def readSuccessValue(_iprot: TProtocol): com.aroonpa.thrift.OptionalUser = {
+        com.aroonpa.thrift.OptionalUser.decode(_iprot)
+      }
+    
+      @inline private def writeSuccessField(success_item: com.aroonpa.thrift.OptionalUser, _oprot: TProtocol): Unit = {
+        _oprot.writeFieldBegin(SuccessField)
+        writeSuccessValue(success_item, _oprot)
+        _oprot.writeFieldEnd()
+      }
+    
+      @inline private def writeSuccessValue(success_item: com.aroonpa.thrift.OptionalUser, _oprot: TProtocol): Unit = {
+        success_item.write(_oprot)
+      }
+    
+      @inline private[thrift] def readAuthFailedValue(_iprot: TProtocol): com.aroonpa.thrift.AuthFailed = {
+        com.aroonpa.thrift.AuthFailed.decode(_iprot)
+      }
+    
+      @inline private def writeAuthFailedField(authFailed_item: com.aroonpa.thrift.AuthFailed, _oprot: TProtocol): Unit = {
+        _oprot.writeFieldBegin(AuthFailedField)
+        writeAuthFailedValue(authFailed_item, _oprot)
+        _oprot.writeFieldEnd()
+      }
+    
+      @inline private def writeAuthFailedValue(authFailed_item: com.aroonpa.thrift.AuthFailed, _oprot: TProtocol): Unit = {
+        authFailed_item.write(_oprot)
+      }
+    
+    
+    }
+    
+    class Result(
+        val success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser],
+        val authFailed: _root_.scala.Option[com.aroonpa.thrift.AuthFailed],
+        val _passthroughFields: immutable$Map[Short, TFieldBlob])
+      extends ThriftResponse[com.aroonpa.thrift.OptionalUser] with ThriftStruct
+      with _root_.scala.Product2[Option[com.aroonpa.thrift.OptionalUser], Option[com.aroonpa.thrift.AuthFailed]]
+      with HasThriftStructCodec3[Result]
+      with java.io.Serializable
+    {
+      import Result._
+      def this(
+        success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser] = _root_.scala.None,
+        authFailed: _root_.scala.Option[com.aroonpa.thrift.AuthFailed] = _root_.scala.None
+      ) = this(
+        success,
+        authFailed,
+        Map.empty
+      )
+    
+      def _1 = success
+      def _2 = authFailed
+    
+      def toTuple: _root_.scala.Tuple2[Option[com.aroonpa.thrift.OptionalUser], Option[com.aroonpa.thrift.AuthFailed]] = {
+        (
+          success,
+          authFailed
+        )
+      }
+    
+      def successField: Option[com.aroonpa.thrift.OptionalUser] = success
+      def exceptionFields: Iterable[Option[com.twitter.scrooge.ThriftException]] = Seq(authFailed)
+    
+    
+      override def write(_oprot: TProtocol): Unit = {
+        Result.validate(this)
+        _oprot.writeStructBegin(Struct)
+        if (success.isDefined) writeSuccessField(success.get, _oprot)
+        if (authFailed.isDefined) writeAuthFailedField(authFailed.get, _oprot)
+        if (_passthroughFields.nonEmpty) {
+          _passthroughFields.values.foreach { _.write(_oprot) }
+        }
+        _oprot.writeFieldStop()
+        _oprot.writeStructEnd()
+      }
+    
+      def copy(
+        success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser] = this.success,
+        authFailed: _root_.scala.Option[com.aroonpa.thrift.AuthFailed] = this.authFailed,
+        _passthroughFields: immutable$Map[Short, TFieldBlob] = this._passthroughFields
+      ): Result =
+        new Result(
+          success,
+          authFailed,
+          _passthroughFields
+        )
+    
+      override def canEqual(other: Any): Boolean = other.isInstanceOf[Result]
+    
+      private def _equals(x: Result, y: Result): Boolean =
+          x.productArity == y.productArity &&
+          x.productIterator.sameElements(y.productIterator)
+    
+      override def equals(other: Any): Boolean =
+        canEqual(other) &&
+          _equals(this, other.asInstanceOf[Result]) &&
+          _passthroughFields == other.asInstanceOf[Result]._passthroughFields
+    
+      override def hashCode: Int = _root_.scala.runtime.ScalaRunTime._hashCode(this)
+    
+      override def toString: String = _root_.scala.runtime.ScalaRunTime._toString(this)
+    
+    
+      override def productArity: Int = 2
+    
+      override def productElement(n: Int): Any = n match {
+        case 0 => this.success
+        case 1 => this.authFailed
+        case _ => throw new IndexOutOfBoundsException(n.toString)
+      }
+    
+      override def productPrefix: String = "Result"
+    
+      def _codec: ThriftStructCodec3[Result] = Result
+    }
+
+    val annotations: immutable$Map[String, String] = immutable$Map.empty
+
+    type FunctionType = Function1[Args,Future[com.aroonpa.thrift.OptionalUser]]
+    type ServiceType = com.twitter.finagle.Service[Args, Result]
+
+    type ServiceIfaceServiceType = com.twitter.finagle.Service[Args, SuccessType]
+
+    def toServiceIfaceService(f: FunctionType): ServiceIfaceServiceType =
+      com.twitter.finagle.Service.mk { args: Args =>
+        f(args)
+      }
+
+    private[this] val toResult = (res: SuccessType) => Result(Some(res))
+
+    def functionToService(f: FunctionType): ServiceType =
+      com.twitter.finagle.Service.mk { args: Args =>
+        f(args).map(toResult)
+      }
+
+    def serviceToFunction(svc: ServiceType): FunctionType = { args: Args =>
+      com.twitter.finagle.thrift.ThriftServiceIface.resultFilter(this).andThen(svc).apply(args)
+    }
+
+    val name: String = "login"
+    val serviceName: String = "UserService"
+    val argsCodec = Args
+    val responseCodec = Result
+    val oneway: Boolean = false
+  }
+
+  // Compatibility aliases.
+  val login$args = Login.Args
+  type login$args = Login.Args
+
+  val login$result = Login.Result
+  type login$result = Login.Result
+
+  object AuthToUser extends com.twitter.scrooge.ThriftMethod {
+    
+    object Args extends ThriftStructCodec3[Args] {
+      val NoPassthroughFields: immutable$Map[Short, TFieldBlob] = immutable$Map.empty[Short, TFieldBlob]
+      val Struct = new TStruct("authToUser_args")
+      val TokenField = new TField("token", TType.STRING, 1)
+      val TokenFieldManifest = implicitly[Manifest[String]]
+    
+      /**
+       * Field information in declaration order.
+       */
+      lazy val fieldInfos: scala.List[ThriftStructFieldInfo] = scala.List[ThriftStructFieldInfo](
+        new ThriftStructFieldInfo(
+          TokenField,
+          false,
+          false,
+          TokenFieldManifest,
+          _root_.scala.None,
+          _root_.scala.None,
+          immutable$Map.empty[String, String],
+          immutable$Map.empty[String, String],
+          None
+        )
+      )
+    
+      lazy val structAnnotations: immutable$Map[String, String] =
+        immutable$Map.empty[String, String]
+    
+      /**
+       * Checks that all required fields are non-null.
+       */
+      def validate(_item: Args): Unit = {
+      }
+    
+      def withoutPassthroughFields(original: Args): Args =
+        new Args(
+          token =
+            {
+              val field = original.token
+              field
+            }
+        )
+    
+      override def encode(_item: Args, _oproto: TProtocol): Unit = {
+        _item.write(_oproto)
+      }
+    
+    
+      override def decode(_iprot: TProtocol): Args = {
+        var token: String = null
+        var _passthroughFields: Builder[(Short, TFieldBlob), immutable$Map[Short, TFieldBlob]] = null
+        var _done = false
+    
+        _iprot.readStructBegin()
+        while (!_done) {
+          val _field = _iprot.readFieldBegin()
+          if (_field.`type` == TType.STOP) {
+            _done = true
+          } else {
+            _field.id match {
+              case 1 =>
+                _field.`type` match {
+                  case TType.STRING =>
+                    token = readTokenValue(_iprot)
+                  case _actualType =>
+                    val _expectedType = TType.STRING
+                    throw new TProtocolException(
+                      "Received wrong type for field 'token' (expected=%s, actual=%s).".format(
+                        ttypeToString(_expectedType),
+                        ttypeToString(_actualType)
+                      )
+                    )
+                }
+              case _ =>
+                if (_passthroughFields == null)
+                  _passthroughFields = immutable$Map.newBuilder[Short, TFieldBlob]
+                _passthroughFields += (_field.id -> TFieldBlob.read(_field, _iprot))
+            }
+            _iprot.readFieldEnd()
+          }
+        }
+        _iprot.readStructEnd()
+    
+        new Args(
+          token,
+          if (_passthroughFields == null)
+            NoPassthroughFields
+          else
+            _passthroughFields.result()
+        )
+      }
+    
+      def apply(
+        token: String
+      ): Args =
+        new Args(
+          token
+        )
+    
+      def unapply(_item: Args): _root_.scala.Option[String] = _root_.scala.Some(_item.token)
+    
+    
+      @inline private[thrift] def readTokenValue(_iprot: TProtocol): String = {
+        _iprot.readString()
+      }
+    
+      @inline private def writeTokenField(token_item: String, _oprot: TProtocol): Unit = {
+        _oprot.writeFieldBegin(TokenField)
+        writeTokenValue(token_item, _oprot)
+        _oprot.writeFieldEnd()
+      }
+    
+      @inline private def writeTokenValue(token_item: String, _oprot: TProtocol): Unit = {
+        _oprot.writeString(token_item)
+      }
+    
+    
+    }
+    
+    class Args(
+        val token: String,
+        val _passthroughFields: immutable$Map[Short, TFieldBlob])
+      extends ThriftStruct
+      with _root_.scala.Product1[String]
+      with HasThriftStructCodec3[Args]
+      with java.io.Serializable
+    {
+      import Args._
+      def this(
+        token: String
+      ) = this(
+        token,
+        Map.empty
+      )
+    
+      def _1 = token
+    
+    
+    
+      override def write(_oprot: TProtocol): Unit = {
+        Args.validate(this)
+        _oprot.writeStructBegin(Struct)
+        if (token ne null) writeTokenField(token, _oprot)
+        if (_passthroughFields.nonEmpty) {
+          _passthroughFields.values.foreach { _.write(_oprot) }
+        }
+        _oprot.writeFieldStop()
+        _oprot.writeStructEnd()
+      }
+    
+      def copy(
+        token: String = this.token,
+        _passthroughFields: immutable$Map[Short, TFieldBlob] = this._passthroughFields
+      ): Args =
+        new Args(
+          token,
+          _passthroughFields
+        )
+    
+      override def canEqual(other: Any): Boolean = other.isInstanceOf[Args]
+    
+      private def _equals(x: Args, y: Args): Boolean =
+          x.productArity == y.productArity &&
+          x.productIterator.sameElements(y.productIterator)
+    
+      override def equals(other: Any): Boolean =
+        canEqual(other) &&
+          _equals(this, other.asInstanceOf[Args]) &&
+          _passthroughFields == other.asInstanceOf[Args]._passthroughFields
+    
+      override def hashCode: Int = _root_.scala.runtime.ScalaRunTime._hashCode(this)
+    
+      override def toString: String = _root_.scala.runtime.ScalaRunTime._toString(this)
+    
+    
+      override def productArity: Int = 1
+    
+      override def productElement(n: Int): Any = n match {
+        case 0 => this.token
+        case _ => throw new IndexOutOfBoundsException(n.toString)
+      }
+    
+      override def productPrefix: String = "Args"
+    
+      def _codec: ThriftStructCodec3[Args] = Args
+    }
+
+    type SuccessType = com.aroonpa.thrift.OptionalUser
+    
+    object Result extends ThriftStructCodec3[Result] {
+      val NoPassthroughFields: immutable$Map[Short, TFieldBlob] = immutable$Map.empty[Short, TFieldBlob]
+      val Struct = new TStruct("authToUser_result")
+      val SuccessField = new TField("success", TType.STRUCT, 0)
+      val SuccessFieldManifest = implicitly[Manifest[com.aroonpa.thrift.OptionalUser]]
+    
+      /**
+       * Field information in declaration order.
+       */
+      lazy val fieldInfos: scala.List[ThriftStructFieldInfo] = scala.List[ThriftStructFieldInfo](
+        new ThriftStructFieldInfo(
+          SuccessField,
+          true,
+          false,
+          SuccessFieldManifest,
+          _root_.scala.None,
+          _root_.scala.None,
+          immutable$Map.empty[String, String],
+          immutable$Map.empty[String, String],
+          None
+        )
+      )
+    
+      lazy val structAnnotations: immutable$Map[String, String] =
+        immutable$Map.empty[String, String]
+    
+      /**
+       * Checks that all required fields are non-null.
+       */
+      def validate(_item: Result): Unit = {
+      }
+    
+      def withoutPassthroughFields(original: Result): Result =
+        new Result(
+          success =
+            {
+              val field = original.success
+              field.map { field =>
+                com.aroonpa.thrift.OptionalUser.withoutPassthroughFields(field)
+              }
+            }
+        )
+    
+      override def encode(_item: Result, _oproto: TProtocol): Unit = {
+        _item.write(_oproto)
+      }
+    
+    
+      override def decode(_iprot: TProtocol): Result = {
+        var success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser] = _root_.scala.None
+        var _passthroughFields: Builder[(Short, TFieldBlob), immutable$Map[Short, TFieldBlob]] = null
+        var _done = false
+    
+        _iprot.readStructBegin()
+        while (!_done) {
+          val _field = _iprot.readFieldBegin()
+          if (_field.`type` == TType.STOP) {
+            _done = true
+          } else {
+            _field.id match {
+              case 0 =>
+                _field.`type` match {
+                  case TType.STRUCT =>
+                    success = _root_.scala.Some(readSuccessValue(_iprot))
+                  case _actualType =>
+                    val _expectedType = TType.STRUCT
+                    throw new TProtocolException(
+                      "Received wrong type for field 'success' (expected=%s, actual=%s).".format(
+                        ttypeToString(_expectedType),
+                        ttypeToString(_actualType)
+                      )
+                    )
+                }
+              case _ =>
+                if (_passthroughFields == null)
+                  _passthroughFields = immutable$Map.newBuilder[Short, TFieldBlob]
+                _passthroughFields += (_field.id -> TFieldBlob.read(_field, _iprot))
+            }
+            _iprot.readFieldEnd()
+          }
+        }
+        _iprot.readStructEnd()
+    
+        new Result(
+          success,
+          if (_passthroughFields == null)
+            NoPassthroughFields
+          else
+            _passthroughFields.result()
+        )
+      }
+    
+      def apply(
+        success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser] = _root_.scala.None
+      ): Result =
+        new Result(
+          success
+        )
+    
+      def unapply(_item: Result): _root_.scala.Option[_root_.scala.Option[com.aroonpa.thrift.OptionalUser]] = _root_.scala.Some(_item.success)
+    
+    
+      @inline private[thrift] def readSuccessValue(_iprot: TProtocol): com.aroonpa.thrift.OptionalUser = {
+        com.aroonpa.thrift.OptionalUser.decode(_iprot)
+      }
+    
+      @inline private def writeSuccessField(success_item: com.aroonpa.thrift.OptionalUser, _oprot: TProtocol): Unit = {
+        _oprot.writeFieldBegin(SuccessField)
+        writeSuccessValue(success_item, _oprot)
+        _oprot.writeFieldEnd()
+      }
+    
+      @inline private def writeSuccessValue(success_item: com.aroonpa.thrift.OptionalUser, _oprot: TProtocol): Unit = {
+        success_item.write(_oprot)
+      }
+    
+    
+    }
+    
+    class Result(
+        val success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser],
+        val _passthroughFields: immutable$Map[Short, TFieldBlob])
+      extends ThriftResponse[com.aroonpa.thrift.OptionalUser] with ThriftStruct
+      with _root_.scala.Product1[Option[com.aroonpa.thrift.OptionalUser]]
+      with HasThriftStructCodec3[Result]
+      with java.io.Serializable
+    {
+      import Result._
+      def this(
+        success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser] = _root_.scala.None
+      ) = this(
+        success,
+        Map.empty
+      )
+    
+      def _1 = success
+    
+      def successField: Option[com.aroonpa.thrift.OptionalUser] = success
+      def exceptionFields: Iterable[Option[com.twitter.scrooge.ThriftException]] = Seq()
+    
+    
+      override def write(_oprot: TProtocol): Unit = {
+        Result.validate(this)
+        _oprot.writeStructBegin(Struct)
+        if (success.isDefined) writeSuccessField(success.get, _oprot)
+        if (_passthroughFields.nonEmpty) {
+          _passthroughFields.values.foreach { _.write(_oprot) }
+        }
+        _oprot.writeFieldStop()
+        _oprot.writeStructEnd()
+      }
+    
+      def copy(
+        success: _root_.scala.Option[com.aroonpa.thrift.OptionalUser] = this.success,
+        _passthroughFields: immutable$Map[Short, TFieldBlob] = this._passthroughFields
+      ): Result =
+        new Result(
+          success,
+          _passthroughFields
+        )
+    
+      override def canEqual(other: Any): Boolean = other.isInstanceOf[Result]
+    
+      private def _equals(x: Result, y: Result): Boolean =
+          x.productArity == y.productArity &&
+          x.productIterator.sameElements(y.productIterator)
+    
+      override def equals(other: Any): Boolean =
+        canEqual(other) &&
+          _equals(this, other.asInstanceOf[Result]) &&
+          _passthroughFields == other.asInstanceOf[Result]._passthroughFields
+    
+      override def hashCode: Int = _root_.scala.runtime.ScalaRunTime._hashCode(this)
+    
+      override def toString: String = _root_.scala.runtime.ScalaRunTime._toString(this)
+    
+    
+      override def productArity: Int = 1
+    
+      override def productElement(n: Int): Any = n match {
+        case 0 => this.success
+        case _ => throw new IndexOutOfBoundsException(n.toString)
+      }
+    
+      override def productPrefix: String = "Result"
+    
+      def _codec: ThriftStructCodec3[Result] = Result
+    }
+
+    val annotations: immutable$Map[String, String] = immutable$Map.empty
+
+    type FunctionType = Function1[Args,Future[com.aroonpa.thrift.OptionalUser]]
+    type ServiceType = com.twitter.finagle.Service[Args, Result]
+
+    type ServiceIfaceServiceType = com.twitter.finagle.Service[Args, SuccessType]
+
+    def toServiceIfaceService(f: FunctionType): ServiceIfaceServiceType =
+      com.twitter.finagle.Service.mk { args: Args =>
+        f(args)
+      }
+
+    private[this] val toResult = (res: SuccessType) => Result(Some(res))
+
+    def functionToService(f: FunctionType): ServiceType =
+      com.twitter.finagle.Service.mk { args: Args =>
+        f(args).map(toResult)
+      }
+
+    def serviceToFunction(svc: ServiceType): FunctionType = { args: Args =>
+      com.twitter.finagle.thrift.ThriftServiceIface.resultFilter(this).andThen(svc).apply(args)
+    }
+
+    val name: String = "authToUser"
+    val serviceName: String = "UserService"
+    val argsCodec = Args
+    val responseCodec = Result
+    val oneway: Boolean = false
+  }
+
+  // Compatibility aliases.
+  val authToUser$args = AuthToUser.Args
+  type authToUser$args = AuthToUser.Args
+
+  val authToUser$result = AuthToUser.Result
+  type authToUser$result = AuthToUser.Result
+
 
   trait MethodPerEndpoint
     extends UserService[Future] {
     
     def addUser(user: com.aroonpa.thrift.User): Future[com.aroonpa.thrift.User]
+    
+    def login(login: com.aroonpa.thrift.Login): Future[com.aroonpa.thrift.OptionalUser]
+    
+    def authToUser(token: String): Future[com.aroonpa.thrift.OptionalUser]
   }
 
   object MethodPerEndpoint {
@@ -631,6 +1715,10 @@ object UserService { self =>
       extends MethodPerEndpoint {
         def addUser(user: com.aroonpa.thrift.User): Future[com.aroonpa.thrift.User] =
           servicePerEndpoint.addUser(self.AddUser.Args(user))
+        def login(login: com.aroonpa.thrift.Login): Future[com.aroonpa.thrift.OptionalUser] =
+          servicePerEndpoint.login(self.Login.Args(login))
+        def authToUser(token: String): Future[com.aroonpa.thrift.OptionalUser] =
+          servicePerEndpoint.authToUser(self.AuthToUser.Args(token))
     }
   }
 
@@ -650,6 +1738,16 @@ object UserService { self =>
           val scroogeRequest = _root_.com.twitter.scrooge.Request(requestCtx.values, self.AddUser.Args(user))
           servicePerEndpoint.addUser(scroogeRequest).transform(_root_.com.twitter.finagle.thrift.service.ThriftReqRepServicePerEndpoint.transformResult(_))
         }
+        def login(login: com.aroonpa.thrift.Login): Future[com.aroonpa.thrift.OptionalUser] = {
+          val requestCtx = _root_.com.twitter.finagle.context.Contexts.local.getOrElse(_root_.com.twitter.finagle.thrift.Headers.Request.Key, () => _root_.com.twitter.finagle.thrift.Headers.Request.newValues)
+          val scroogeRequest = _root_.com.twitter.scrooge.Request(requestCtx.values, self.Login.Args(login))
+          servicePerEndpoint.login(scroogeRequest).transform(_root_.com.twitter.finagle.thrift.service.ThriftReqRepServicePerEndpoint.transformResult(_))
+        }
+        def authToUser(token: String): Future[com.aroonpa.thrift.OptionalUser] = {
+          val requestCtx = _root_.com.twitter.finagle.context.Contexts.local.getOrElse(_root_.com.twitter.finagle.thrift.Headers.Request.Key, () => _root_.com.twitter.finagle.thrift.Headers.Request.newValues)
+          val scroogeRequest = _root_.com.twitter.scrooge.Request(requestCtx.values, self.AuthToUser.Args(token))
+          servicePerEndpoint.authToUser(scroogeRequest).transform(_root_.com.twitter.finagle.thrift.service.ThriftReqRepServicePerEndpoint.transformResult(_))
+        }
     }
   }
 
@@ -658,6 +1756,10 @@ object UserService { self =>
     extends FutureIface {
     def addUser(user: com.aroonpa.thrift.User): Future[com.aroonpa.thrift.User] =
       serviceIface.addUser(self.AddUser.Args(user))
+    def login(login: com.aroonpa.thrift.Login): Future[com.aroonpa.thrift.OptionalUser] =
+      serviceIface.login(self.Login.Args(login))
+    def authToUser(token: String): Future[com.aroonpa.thrift.OptionalUser] =
+      serviceIface.authToUser(self.AuthToUser.Args(token))
   }
 
   implicit object MethodPerEndpointBuilder
@@ -684,6 +1786,10 @@ object UserService { self =>
     extends UserService[Future] {
     
     def addUser(user: com.aroonpa.thrift.User): Future[com.aroonpa.thrift.User]
+    
+    def login(login: com.aroonpa.thrift.Login): Future[com.aroonpa.thrift.OptionalUser]
+    
+    def authToUser(token: String): Future[com.aroonpa.thrift.OptionalUser]
   }
 
   class FinagledClient(

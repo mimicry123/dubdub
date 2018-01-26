@@ -267,8 +267,152 @@ class UserService$FinagleService(
                 args,
                 reply("addUser", seqid, methodResult),
                 methodResult))
+          case _root_.com.twitter.util.Throw(e: com.aroonpa.thrift.UserIdAlreadyCreated) => {
+            val methodResult = AddUser.Result(userIdAlreadyCreated = Some(e))
+            Future.value(
+              ThriftExceptionResult(
+                args,
+                reply("addUser", seqid, methodResult),
+                methodResult))
+          }
+          case _root_.com.twitter.util.Throw(e: com.aroonpa.thrift.UserEmailAlreadyCreated) => {
+            val methodResult = AddUser.Result(userEmailAlreadyCreated = Some(e))
+            Future.value(
+              ThriftExceptionResult(
+                args,
+                reply("addUser", seqid, methodResult),
+                methodResult))
+          }
           case t @ _root_.com.twitter.util.Throw(_) =>
             Future.const(t.cast[RichResponse[AddUser.Args, AddUser.Result]])
+        }
+      }
+    }
+  
+    statsFilter.andThen(protocolExnFilter).andThen(serdeFilter).andThen(methodService)
+  })
+  addService("login", {
+    val statsFilter: finagle$Filter[(TProtocol, Int), Array[Byte], (TProtocol, Int), RichResponse[Login.Args, Login.Result]] = perMethodStatsFilter(Login)
+  
+    val methodService = new finagle$Service[Login.Args, Login.SuccessType] {
+      def apply(args: Login.Args): Future[Login.SuccessType] = {
+        if (_root_.com.twitter.finagle.tracing.Trace.isActivelyTracing) {
+          _root_.com.twitter.finagle.tracing.Trace.recordRpc("login")
+        }
+        iface.login(args.login)
+      }
+    }
+  
+    val protocolExnFilter = new SimpleFilter[(TProtocol, Int), RichResponse[Login.Args, Login.Result]] {
+      def apply(
+        request: (TProtocol, Int),
+        service: finagle$Service[(TProtocol, Int), RichResponse[Login.Args, Login.Result]]
+      ): Future[RichResponse[Login.Args, Login.Result]] = {
+        val iprot = request._1
+        val seqid = request._2
+        val res = service(request)
+        res.transform {
+          case _root_.com.twitter.util.Throw(e: TProtocolException) =>
+            iprot.readMessageEnd()
+            Future.value(
+              ProtocolException(
+                null,
+                exception("login", seqid, TApplicationException.PROTOCOL_ERROR, e.getMessage),
+                new TApplicationException(TApplicationException.PROTOCOL_ERROR, e.getMessage)))
+          case _ =>
+            res
+        }
+      }
+    }
+  
+    val serdeFilter = new finagle$Filter[(TProtocol, Int), RichResponse[Login.Args, Login.Result], Login.Args, Login.SuccessType] {
+      def apply(
+        request: (TProtocol, Int),
+        service: finagle$Service[Login.Args, Login.SuccessType]
+      ): Future[RichResponse[Login.Args, Login.Result]] = {
+        val iprot = request._1
+        val seqid = request._2
+        val args = Login.Args.decode(iprot)
+        iprot.readMessageEnd()
+        val res = service(args)
+        res.transform {
+          case _root_.com.twitter.util.Return(value) =>
+            val methodResult = Login.Result(success = Some(value))
+            Future.value(
+              SuccessfulResult(
+                args,
+                reply("login", seqid, methodResult),
+                methodResult))
+          case _root_.com.twitter.util.Throw(e: com.aroonpa.thrift.AuthFailed) => {
+            val methodResult = Login.Result(authFailed = Some(e))
+            Future.value(
+              ThriftExceptionResult(
+                args,
+                reply("login", seqid, methodResult),
+                methodResult))
+          }
+          case t @ _root_.com.twitter.util.Throw(_) =>
+            Future.const(t.cast[RichResponse[Login.Args, Login.Result]])
+        }
+      }
+    }
+  
+    statsFilter.andThen(protocolExnFilter).andThen(serdeFilter).andThen(methodService)
+  })
+  addService("authToUser", {
+    val statsFilter: finagle$Filter[(TProtocol, Int), Array[Byte], (TProtocol, Int), RichResponse[AuthToUser.Args, AuthToUser.Result]] = perMethodStatsFilter(AuthToUser)
+  
+    val methodService = new finagle$Service[AuthToUser.Args, AuthToUser.SuccessType] {
+      def apply(args: AuthToUser.Args): Future[AuthToUser.SuccessType] = {
+        if (_root_.com.twitter.finagle.tracing.Trace.isActivelyTracing) {
+          _root_.com.twitter.finagle.tracing.Trace.recordRpc("authToUser")
+        }
+        iface.authToUser(args.token)
+      }
+    }
+  
+    val protocolExnFilter = new SimpleFilter[(TProtocol, Int), RichResponse[AuthToUser.Args, AuthToUser.Result]] {
+      def apply(
+        request: (TProtocol, Int),
+        service: finagle$Service[(TProtocol, Int), RichResponse[AuthToUser.Args, AuthToUser.Result]]
+      ): Future[RichResponse[AuthToUser.Args, AuthToUser.Result]] = {
+        val iprot = request._1
+        val seqid = request._2
+        val res = service(request)
+        res.transform {
+          case _root_.com.twitter.util.Throw(e: TProtocolException) =>
+            iprot.readMessageEnd()
+            Future.value(
+              ProtocolException(
+                null,
+                exception("authToUser", seqid, TApplicationException.PROTOCOL_ERROR, e.getMessage),
+                new TApplicationException(TApplicationException.PROTOCOL_ERROR, e.getMessage)))
+          case _ =>
+            res
+        }
+      }
+    }
+  
+    val serdeFilter = new finagle$Filter[(TProtocol, Int), RichResponse[AuthToUser.Args, AuthToUser.Result], AuthToUser.Args, AuthToUser.SuccessType] {
+      def apply(
+        request: (TProtocol, Int),
+        service: finagle$Service[AuthToUser.Args, AuthToUser.SuccessType]
+      ): Future[RichResponse[AuthToUser.Args, AuthToUser.Result]] = {
+        val iprot = request._1
+        val seqid = request._2
+        val args = AuthToUser.Args.decode(iprot)
+        iprot.readMessageEnd()
+        val res = service(args)
+        res.transform {
+          case _root_.com.twitter.util.Return(value) =>
+            val methodResult = AuthToUser.Result(success = Some(value))
+            Future.value(
+              SuccessfulResult(
+                args,
+                reply("authToUser", seqid, methodResult),
+                methodResult))
+          case t @ _root_.com.twitter.util.Throw(_) =>
+            Future.const(t.cast[RichResponse[AuthToUser.Args, AuthToUser.Result]])
         }
       }
     }

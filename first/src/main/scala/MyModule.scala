@@ -1,3 +1,5 @@
+package com.aroonpa
+
 import com.aroonpa.thrift.UserService
 import com.google.inject.Provides
 import com.twitter.finagle.ThriftMux
@@ -12,8 +14,10 @@ object MyModule1 extends TwitterModule {
   val label = flag(name = "client.label", default = "defaultLabelIfNoneProvided", help = "The client label to use.")
   flag(name = "cwd", default = "/users/arunviswanathan", help = "Home directory")
   flag(name = "audioDir", default = "audio", help = "Directory to store audio")
-  flag(name = "videoDir", default = "tubes", help = "Directory to store videos")
+  flag(name = "videoDir", default = "mediadrop/mediadrop/data/media", help = "Directory to store videos")
   flag(name = "dubbingDir", default = "dubbed", help = "Directory to store dubbed videos")
+  flag(name = "elasticHost", default = "localhost", help = "Host for elastic search")
+  flag(name = "elasticPort", default = "9200", help = "Port for elastic search")
 
 
 @Provides

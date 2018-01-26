@@ -4,7 +4,7 @@
 		module="user-build"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20171228170425"
+		publication="20180125165848"
 		e:sbtVersion="1.0" e:scalaVersion="2.12"
 	>
 		<description>
@@ -34,6 +34,12 @@
 		<dependency org="org.scala-lang" name="scala-compiler" rev="2.12.4" conf="scala-tool->default,optional(default)"/>
 		<dependency org="org.scala-lang" name="scala-library" rev="2.12.4" conf="scala-tool->default,optional(default);provided->default(compile)"/>
 		<dependency org="org.scala-sbt" name="sbt" rev="1.0.4" conf="provided->default(compile)"/>
+		<dependency org="org.scala-sbt" name="global-plugins" rev="0.0" conf="compile->default(compile)" e:sbtVersion="1.0" e:scalaVersion="2.12">
+			<artifact name="global-plugins" type="pom" ext="pom" conf="pom"/>
+			<artifact name="global-plugins" type="jar" ext="jar" conf="compile"/>
+			<artifact name="global-plugins" type="src" ext="jar" conf="compile" e:classifier="sources"/>
+			<artifact name="global-plugins" type="doc" ext="jar" conf="compile" e:classifier="javadoc"/>
+		</dependency>
 		<dependency org="com.twitter" name="scrooge-sbt-plugin" rev="17.12.0" conf="compile->default(compile)" e:sbtVersion="1.0" e:scalaVersion="2.12"/>
 		<override org="org.scalactic" module="scalactic_2.12" matcher="exact" rev="3.0.1"/>
 		<override org="javax.inject" module="javax.inject" matcher="exact" rev="1"/>
@@ -48,6 +54,7 @@
 		<override org="org.codehaus.plexus" module="plexus-classworlds" matcher="exact" rev="2.5.2"/>
 		<override org="org.pantsbuild" module="jarjar" matcher="exact" rev="1.6.5"/>
 		<override org="org.eclipse.sisu" module="org.eclipse.sisu.inject" matcher="exact" rev="0.3.2"/>
+		<override org="org.scala-sbt" module="global-plugins" matcher="exact" rev="0.0"/>
 		<override org="org.apache.maven" module="maven-artifact" matcher="exact" rev="3.3.9"/>
 		<override org="org.apache.maven" module="maven-plugin-api" matcher="exact" rev="3.3.9"/>
 		<override org="org.apache.maven" module="maven-model" matcher="exact" rev="3.3.9"/>

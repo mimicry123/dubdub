@@ -4,7 +4,7 @@
 		module="first_2.12"
 		revision="0.1"
 		status="integration"
-		publication="20171228170430"
+		publication="20180125171223"
 	>
 		<description>
 		first
@@ -35,5 +35,31 @@
 		<dependency org="default" name="user_2.12" rev="0.1" conf="compile->default(compile)"/>
 		<dependency org="com.twitter" name="finatra-http_2.12" rev="17.12.0" conf="compile->default(compile)"/>
 		<dependency org="com.twitter" name="util-logging_2.12" rev="17.12.0" conf="compile->default(compile)"/>
+		<dependency org="com.twitter" name="finagle-mysql_2.12" rev="17.12.0" conf="compile->default(compile)"/>
+		<dependency org="com.sksamuel.elastic4s" name="elastic4s-http_2.12" rev="6.1.2" conf="compile->default(compile)">
+			<exclude org="com.fasterxml.jackson.core" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.databind" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.module" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
+		<dependency org="com.sksamuel.elastic4s" name="elastic4s-core_2.12" rev="6.1.2" conf="compile->default(compile)">
+			<exclude org="com.fasterxml.jackson.core" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.databind" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.module" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
+		<dependency org="com.sksamuel.elastic4s" name="elastic4s-embedded_2.12" rev="6.1.2" conf="compile->default(compile)">
+			<exclude org="com.fasterxml.jackson.core" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.databind" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.module" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
+		<dependency org="com.twitter" name="bijection-core_2.12" rev="0.9.6" conf="compile->default(compile)">
+			<exclude org="com.fasterxml.jackson.core" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.databind" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.module" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
+		<dependency org="com.twitter" name="bijection-util_2.12" rev="0.9.6" conf="compile->default(compile)">
+			<exclude org="com.fasterxml.jackson.core" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.databind" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="com.fasterxml.jackson.module" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
 	</dependencies>
 </ivy-module>
