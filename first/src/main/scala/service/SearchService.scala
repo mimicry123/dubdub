@@ -45,7 +45,10 @@ class SearchService @Inject()(@Flag("elasticHost") host: String = "localhost",
     response.flatMap({
       _ match {
         case Left(failure) => TwitterFuture.exception(new Exception(failure.toString))
-        case Right(results) => TwitterFuture.value(results.result.hits.hits)
+        case Right(results) => {
+          print(results)
+          TwitterFuture.value(results.result.hits.hits)
+        }
       }
     })
   }

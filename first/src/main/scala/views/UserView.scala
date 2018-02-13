@@ -1,5 +1,7 @@
 package views
 
+import com.aroonpa.{Media, SearchResult}
+import com.github.mustachejava.util.InternalArrayList
 import com.twitter.finatra.response.Mustache
 
 @Mustache("user")
@@ -22,7 +24,7 @@ case class LoginView(error: String = "")
 case class SignUp(error: String = "")
 
 @Mustache("search")
-case class SearchView(results:String ="" ,error: String = "")
+case class SearchView(results: java.util.List[Media] = new InternalArrayList(), error: String = "")
 
 trait Header {
   val userid: String

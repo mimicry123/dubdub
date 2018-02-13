@@ -2,6 +2,8 @@ package com.aroonpa
 
 import java.sql.Date
 
+import com.aroonpa.service.JsonUtil.fromJson
+import com.aroonpa.service._
 import com.aroonpa.thrift._
 import com.google.inject.Inject
 import com.twitter.finagle.http.Request
@@ -13,8 +15,9 @@ import com.twitter.finatra.http.{Controller, HttpServer}
 import com.twitter.finatra.request.FormParam
 import com.twitter.inject.Logging
 import com.twitter.util.{Await, Future}
-import com.aroonpa.service.{DownloaderService, SearchService, SplicingService, StorageService}
 import views._
+
+import scala.collection.JavaConverters._
 
 
 object EntryServer extends HttpServer {
@@ -28,6 +31,8 @@ object EntryServer extends HttpServer {
       .add[HelloController]
   }
 }
+
+case class SearchResult(status: String)
 
 case class FormPostRequest(@FormParam video: String)
 
@@ -137,8 +142,13 @@ class HelloController @Inject()(downloader: DownloaderService,
     SearchView()
   }
 
+
+
+
   post("/search") { request: SearchForm =>
-    searchService.searchKey(request.search).map(a => SearchView(a.mkString(",")))
+    searchService.searchKey(request.search)
+      .map(b => b.map(_.sourceAsString))
+        .map(a => SearchView(a.map(fromJson[Media]).toList.asJava))
   }
 
   post("/signup") { request: SignUpForm =>

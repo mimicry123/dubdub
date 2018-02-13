@@ -1,19 +1,27 @@
 <html>
 {{> header}}
+<script>
+
+
+</script>
+
 <body>
 
 <div class="container">
     <form action="search" method="post">
         <div class="form-group row has-success">
-            <label for="search">Your video URL</label>
+            <label for="search">Search</label>
             <div class="input-group">
                 <input type="text" name="search" class="form-control" id="searchText" aria-describedby="basic-addon3">
             </div>
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
     </form>
-    <div>
-        {{results}}
+    <div id="dummy">
+        {{#results}}
+            <li>{{id}} <a href={{slug}}>{{subtitle}}</a></li>
+
+        {{/results}}
     </div>
 </div>
 </body>
